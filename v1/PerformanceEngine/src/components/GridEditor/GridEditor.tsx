@@ -23,12 +23,9 @@ const GridEditor: React.FC = () => {
 
   // Handle dragging and snapping to the grid
   const handleDrag = (e: any, data: any, id: string) => {
-    const snappedX = Math.round(data.x / CELL_SIZE) * CELL_SIZE;
-    const snappedY = Math.round(data.y / CELL_SIZE) * CELL_SIZE;
-
     setCharts((prevCharts) =>
       prevCharts.map((chart) =>
-        chart.id === id ? { ...chart, x: snappedX, y: snappedY } : chart
+        chart.id === id ? { ...chart, x: data.x, y: data.y } : chart
       )
     );
   };
@@ -51,6 +48,7 @@ const GridEditor: React.FC = () => {
           nodeRef={nodeRef}
           key={chart.id}
           position={{ x: chart.x, y: chart.y }} // Set the position based on chart state
+          grid={[CELL_SIZE, CELL_SIZE]}
           onDrag={(e, data) => handleDrag(e, data, chart.id)} // Handle the drag
         >
           <div
