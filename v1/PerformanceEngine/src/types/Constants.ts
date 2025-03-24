@@ -10,10 +10,14 @@ export const GRID_WIDTH = 850;
 export const GRID_HEIGHT = 1100;
 
 export const BAR_CHART = 'bar';
+export const MULTI_BAR_CHART = 'multi-bar';
 export const PIE_CHART = 'pie';
+export const LINE_CHART = 'line';
+export const MULTI_LINE_CHART = 'multi-line';
+export const TABLE_CHART = 'table';
 
 export const MOCK_BAR_GRAPH_REQUEST: GraphRequest = {
-    id: 'testgraph',
+    id: 'bargraph',
     type: 'returns',
     range: ['00', '01'],
     chartType: BAR_CHART
@@ -21,7 +25,7 @@ export const MOCK_BAR_GRAPH_REQUEST: GraphRequest = {
 
 export const MOCK_PIE_GRAPH_REQUEST: GraphRequest = {
     id: 'piegraph',
-    type: 'returns',
+    type: 'allocation',
     range: ['00', '01'],
     chartType: PIE_CHART
 };

@@ -69,9 +69,9 @@ const Visualization: React.FC<Props> = (props) => {
             series={[
                 {
                     data: [
-                        { id: 0, value: 14, label: 'series a' },
-                        { id: 1, value: 15, label: 'series B' },
-                        { id: 2, value: 20, label: 'series C' },
+                        { id: 0, value: 14, label: 'Placeholder A' },
+                        { id: 1, value: 15, label: 'Placeholder B' },
+                        { id: 2, value: 20, label: 'Placeholder C' },
                     ]
                 }
             ]}

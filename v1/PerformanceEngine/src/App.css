@@ -3,8 +3,24 @@
   justify-items: center;
 }
 
+#grid-editor {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  margin-top: 20px;
+}
+
 @media print {
   .hidden-on-print {
     display: none !important;
+  }
+
+  #grid {
+    border: 0px solid white !important;
+  }
+
+  #grid-editor {
+    margin-top: 0px !important;
   }
 }

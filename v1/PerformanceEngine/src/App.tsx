@@ -32,24 +32,26 @@ const App: React.FC = () => {
 
     return (
         <div className="App">
-            <h1>Editor</h1>
+            <h1 className='hidden-on-print'>Page Title (could be set via API)</h1>
             <Stack
                 direction={"row"}
                 className='hidden-on-print'
                 justifyContent={'center'}
                 alignItems={'center'}
                 alignContent={'center'}
-                spacing={2}
-            >
+                spacing={2} >
                 <Button variant="contained" onClick={addBtnClick}>Add Chart</Button>
                 <Button variant='contained' onClick={loadBtnClick}>Load Data</Button>
             </Stack>
-            <GridEditor
-                new_graph_request={newGraph}
-                set_graph_request={setNewGraph}
-                loadData={loadData}
-                setLoaded={setLoadData} />
+            <div id='grid-editor'>
+                <GridEditor
+                    new_graph_request={newGraph}
+                    set_graph_request={setNewGraph}
+                    loadData={loadData}
+                    setLoaded={setLoadData} />
+            </div>
         </div>
+
     );
 };
 
