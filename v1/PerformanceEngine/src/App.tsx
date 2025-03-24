@@ -1,32 +1,20 @@
-import { useState } from 'react';
+import { createContext, useState } from 'react';
 
-import { Dataset } from "./types/BackendInterfaces";
+import { SharedContent } from './types/DataContexts';
 
 import GridEditor from "./components/GridEditor/GridEditor";
 import EditBar from './components/EditBar/EditBar';
 import "./App.css";
+import { GraphRequest } from './types/BackendInterfaces';
 
 const App: React.FC = () => {
-  const [datasets, setDatasets] = useState<Dataset[]>([
-    {
-      id: "chart1",
-      data: [1,4,7,4,2],
-      axes: ["A", "B", "C"],
-      supportedTypes: ["bar"]
-    },
-    {
-      id: "chart2",
-      data: [4,4,8,3,9.3],
-      axes: ["A", "B", "C"],
-      supportedTypes: ["bar"]
-    }
-  ]);
+  const [newGraph, setNewGraph] = useState<GraphRequest|undefined>(undefined);
 
   return (
     <div className="App">
       <h1>Shape Dragging App</h1>
-      <EditBar datasets={datasets} />
-      <GridEditor datasets={datasets} />
+      <EditBar set_graph_request={setNewGraph} />
+      <GridEditor new_graph_request={newGraph} set_graph_request={setNewGraph} />
     </div>
   );
 };

@@ -1,11 +1,25 @@
 /**
- * Interface type for datasets.
+ * Interface type for GraphRequest params.
  */
-export interface Dataset {
-    /**
-     * Dataset id.
-     */
-    id: string;
+export interface GraphRequest {
+  /**
+   * ID to identify graph data source.
+   */
+  id: string;
+  /**
+   * Graph data type. (Ex. market value, return)
+   */
+  type: string;
+  /** Array with two indices, start of range and end of range.
+   * These will be filtered in the backend.
+   */
+  range: string[];
+}
+
+/**
+ * Interface type for return values of GraphRequest.
+ */
+export interface GraphRequestReturn {
     /**
      * Axis labels.
      */
@@ -23,4 +37,4 @@ export interface Dataset {
      * - `table`
      */
     supportedTypes: string[];
-  }
+}

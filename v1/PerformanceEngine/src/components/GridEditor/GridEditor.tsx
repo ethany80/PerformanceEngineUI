@@ -1,24 +1,39 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useRef } from "react";
 import Draggable from "react-draggable";
 import { BarChart } from "@mui/x-charts/BarChart";
 
-import { Dataset } from "../../types/BackendInterfaces";
 import { GRID_HEIGHT, GRID_WIDTH, CELL_SIZE } from "../../types/Constants";
+import { GraphRequest } from "../../types/BackendInterfaces";
 
 interface ChartDataProps {
+  req: GraphRequest;
   id: string;
   x: number;
   y: number;
 }
 
-type Props = {datasets: Dataset[]}
+type Props = { 
+  new_graph_request?: GraphRequest, 
+  set_graph_request: (req: GraphRequest|undefined) => void }
 
 const GridEditor: React.FC<Props> = (props) => {
-  const [charts, setCharts] = useState<ChartDataProps[]>([
-    { id: "chart1", x: 0, y: 0 },
-    { id: "chart2", x: 200, y: 200 },
-  ]);
+  const [charts, setCharts] = useState<ChartDataProps[]>([]);
+  const [nextId, setNextId] = useState<number>(0);
+
+  useEffect(() => {
+    if (props.new_graph_request != undefined) {
+      const req = props.new_graph_request;
+      setCharts((prevCharts) => [...prevCharts, {
+        req: req, 
+        x: 0, 
+        y: 0, 
+        id: req.id + nextId.toString()
+      }]);
+      setNextId(nextId + 1);
+      props.set_graph_request(undefined);
+    }
+  })
 
   const nodeRef = useRef(null);
 
