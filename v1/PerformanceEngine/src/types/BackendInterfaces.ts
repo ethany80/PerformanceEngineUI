@@ -1,4 +1,18 @@
 /**
+ * Interface containing information for a given account ID retrieved from the backend.
+ */
+export interface DocumentInfo {
+  /**
+   * Identifier for account ID.
+   */
+  id: string;
+  /**
+   * Available data types for the given ID.
+   */
+  availableTypes: string[];
+}
+
+/**
  * Interface type for GraphRequest params.
  */
 export interface GraphRequest {
