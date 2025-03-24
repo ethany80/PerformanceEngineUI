@@ -1,11 +1,24 @@
-import { createContext, useState } from 'react';
+import { useState } from 'react';
 
 
 import GridEditor from "./components/GridEditor/GridEditor";
 import "./App.css";
 import { DocumentInfo, GraphRequest } from './types/BackendInterfaces';
-import { Box, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, FormControl, IconButton, Input, InputLabel, MenuItem, Paper, Select, SelectChangeEvent, Stack, styled, TextField } from '@mui/material';
-import { BAR_CHART, MOCK_BAR_GRAPH_REQUEST, MOCK_PIE_GRAPH_REQUEST, PIE_CHART } from './types/Constants';
+import { Button, 
+    Dialog, 
+    DialogActions, 
+    DialogContent, 
+    DialogContentText, 
+    DialogTitle, 
+    FormControl, 
+    IconButton, 
+    InputLabel, 
+    MenuItem, 
+    Select, 
+    SelectChangeEvent, 
+    Stack,
+    TextField } from '@mui/material';
+import { BAR_CHART, PIE_CHART } from './types/Constants';
 import { Close } from '@mui/icons-material';
 
 const App: React.FC = () => {
@@ -14,9 +27,9 @@ const App: React.FC = () => {
     const [loadData, setLoadData] = useState<boolean>(false);
     const [ids, setIds] = useState<Map<string, DocumentInfo>>((): Map<string, DocumentInfo> => {
         const newMap = new Map<string, DocumentInfo>();
-        newMap.set("ID1", {id: "ID1", availableTypes: ["Market Value", "Return"]});
-        newMap.set("ID2", {id: "ID2", availableTypes: ["Market Value", "Something Else"]});
-        newMap.set("ID3", {id: "ID3", availableTypes: ["Market Value", "Return"]});
+        newMap.set("ID1", { id: "ID1", availableTypes: ["Market Value", "Return"] });
+        newMap.set("ID2", { id: "ID2", availableTypes: ["Market Value", "Something Else"] });
+        newMap.set("ID3", { id: "ID3", availableTypes: ["Market Value", "Return"] });
         return newMap;
     });
 
@@ -55,7 +68,7 @@ const App: React.FC = () => {
         setAddDialogAllowedGraphTypes([BAR_CHART, PIE_CHART]);
     };
 
-    const addBtnSubmit = ()  => {
+    const addBtnSubmit = () => {
         let newReq: GraphRequest = {
             id: addDialogId,
             type: addDialogType,
@@ -74,19 +87,19 @@ const App: React.FC = () => {
 
     return (
         <div className="App">
-            <Dialog 
+            <Dialog
                 open={addDialogOpen}
                 onClose={closeAddDialog}
-                fullWidth 
+                fullWidth
                 maxWidth={'md'}>
                 <DialogTitle>Add Chart</DialogTitle>
-                <IconButton aria-label='close' onClick={closeAddDialog} sx={(_) => ({position: 'absolute', right: 8, top: 8})}>
+                <IconButton aria-label='close' onClick={closeAddDialog} sx={(_) => ({ position: 'absolute', right: 8, top: 8 })}>
                     <Close />
                 </IconButton>
                 <DialogContent>
                     <DialogContentText>Enter the required information and select chart type.</DialogContentText>
-                    <Stack 
-                        direction={'column'} 
+                    <Stack
+                        direction={'column'}
                         spacing={2}
                         sx={{
                             display: 'flex',
@@ -94,10 +107,10 @@ const App: React.FC = () => {
                             m: 'auto',
                             paddingTop: '10px'
                         }}>
-                        <Stack 
-                            direction={'row'} 
-                            spacing={2} 
-                            paddingLeft={'20px'} 
+                        <Stack
+                            direction={'row'}
+                            spacing={2}
+                            paddingLeft={'20px'}
                             paddingRight={'20px'}>
                             {/* ID */}
                             <FormControl fullWidth>
@@ -142,39 +155,39 @@ const App: React.FC = () => {
                             </FormControl>
                             {/* Range 1 */}
                             <FormControl fullWidth>
-                                <TextField 
-                                variant='filled' 
-                                value={addDialogRange1} 
-                                label={"Range 1"} 
-                                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                                    setAddDialogRange1(e.target.value);
+                                <TextField
+                                    variant='filled'
+                                    value={addDialogRange1}
+                                    label={"Range 1"}
+                                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                                        setAddDialogRange1(e.target.value);
 
-                                    if (addDialogId && addDialogType && e.target.value && addDialogRange2) {
-                                        enableGraphType();
-                                    } else if (addDialogGraphTypeEnabled) {
-                                        setAddDialogGraphTypeEnabled(false);
-                                    }
-                                }} />
+                                        if (addDialogId && addDialogType && e.target.value && addDialogRange2) {
+                                            enableGraphType();
+                                        } else if (addDialogGraphTypeEnabled) {
+                                            setAddDialogGraphTypeEnabled(false);
+                                        }
+                                    }} />
                             </FormControl>
                             {/* Range 2 */}
                             <FormControl fullWidth>
-                                <TextField 
-                                variant='filled' 
-                                value={addDialogRange2} 
-                                label={"Range 2"} 
-                                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                                    setAddDialogRange2(e.target.value);
+                                <TextField
+                                    variant='filled'
+                                    value={addDialogRange2}
+                                    label={"Range 2"}
+                                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                                        setAddDialogRange2(e.target.value);
 
-                                    if (addDialogId && addDialogType && addDialogRange1 && e.target.value) {
-                                        enableGraphType();
-                                    } else if (addDialogGraphTypeEnabled) {
-                                        setAddDialogGraphTypeEnabled(false);
-                                    }
-                                }} />
+                                        if (addDialogId && addDialogType && addDialogRange1 && e.target.value) {
+                                            enableGraphType();
+                                        } else if (addDialogGraphTypeEnabled) {
+                                            setAddDialogGraphTypeEnabled(false);
+                                        }
+                                    }} />
                             </FormControl>
                         </Stack>
                         {/* Chart Type */}
-                        <FormControl sx={{paddingTop: "20"}} fullWidth>
+                        <FormControl sx={{ paddingTop: "20" }} fullWidth>
                             <InputLabel>Chart Type</InputLabel>
                             <Select
                                 value={addDialogGraphType}

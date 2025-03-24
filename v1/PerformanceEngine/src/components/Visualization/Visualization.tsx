@@ -1,8 +1,7 @@
-import React, { MouseEvent, useState } from "react";
-import { useContext } from "react";
+import React from "react";
 import { BAR_CHART, CELL_SIZE, PIE_CHART } from "../../types/Constants";
 import { BarChart } from "@mui/x-charts/BarChart";
-import { GraphRequest, GraphRequestReturn } from "../../types/BackendInterfaces";
+import { GraphRequestReturn } from "../../types/BackendInterfaces";
 
 import "./Visualization.css";
 import { PieChart, PieValueType } from "@mui/x-charts";

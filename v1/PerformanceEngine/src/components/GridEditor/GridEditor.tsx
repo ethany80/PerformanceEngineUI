@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useRef } from "react";
 import Draggable from "react-draggable";
-import { BarChart } from "@mui/x-charts/BarChart";
 
 import Visualization from "../Visualization/Visualization";
 
@@ -62,7 +61,7 @@ const GridEditor: React.FC<Props> = (props) => {
     const nodeRef = useRef(null);
 
     // Handle dragging and snapping to the grid
-    const handleDrag = (e: any, data: any, id: string) => {
+    const handleDrag = (_: any, data: any, id: string) => {
         setCharts((prevCharts) =>
             prevCharts.map((chart) =>
                 chart.id === id ? { ...chart, x: data.x, y: data.y } : chart
