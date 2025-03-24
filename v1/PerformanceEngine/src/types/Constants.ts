@@ -9,6 +9,7 @@ export const GRID_WIDTH = 850;
 /** Overall grid height. */
 export const GRID_HEIGHT = 1100;
 
+// Chart types
 export const BAR_CHART = 'bar';
 export const MULTI_BAR_CHART = 'multi-bar';
 export const PIE_CHART = 'pie';
