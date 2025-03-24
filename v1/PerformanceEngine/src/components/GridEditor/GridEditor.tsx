@@ -3,9 +3,8 @@ import { useRef } from "react";
 import Draggable from "react-draggable";
 import { BarChart } from "@mui/x-charts/BarChart";
 
-const CELL_SIZE = 25; // Size of each grid cell
-const GRID_WIDTH = 850;
-const GRID_HEIGHT = 1100;
+import { Dataset } from "../../types/BackendInterfaces";
+import { GRID_HEIGHT, GRID_WIDTH, CELL_SIZE } from "../../types/Constants";
 
 interface ChartDataProps {
   id: string;
@@ -13,7 +12,9 @@ interface ChartDataProps {
   y: number;
 }
 
-const GridEditor: React.FC = () => {
+type Props = {datasets: Dataset[]}
+
+const GridEditor: React.FC<Props> = (props) => {
   const [charts, setCharts] = useState<ChartDataProps[]>([
     { id: "chart1", x: 0, y: 0 },
     { id: "chart2", x: 200, y: 200 },
@@ -60,7 +61,7 @@ const GridEditor: React.FC = () => {
               cursor: "grab",
               background: "white",
               boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.2)",
-              borderRadius: 8,
+              borderRadius: 0,
               position: "absolute",
             }}
           >
