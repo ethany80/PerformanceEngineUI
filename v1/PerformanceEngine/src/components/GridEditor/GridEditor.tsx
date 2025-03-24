@@ -49,6 +49,7 @@ const GridEditor: React.FC = () => {
           key={chart.id}
           position={{ x: chart.x, y: chart.y }} // Set the position based on chart state
           grid={[CELL_SIZE, CELL_SIZE]}
+          bounds={ "parent" }
           onDrag={(e, data) => handleDrag(e, data, chart.id)} // Handle the drag
         >
           <div
