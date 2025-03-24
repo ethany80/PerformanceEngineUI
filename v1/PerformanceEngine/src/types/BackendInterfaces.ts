@@ -14,6 +14,11 @@ export interface GraphRequest {
    * These will be filtered in the backend.
    */
   range: string[];
+
+  /**
+   * Type of chart to use for this graph request.
+   */
+  chartType: string;
 }
 
 /**
@@ -27,7 +32,7 @@ export interface GraphRequestReturn {
     /** 
      * Data may be either a 1D (bar charts, pie charts, 1-line line charts) 
      * or 2D array of numbers (multi-line, table), check supported types before attempting to access at index.  */
-    data: Array<number[]|number>;
+    data: number[][]|number[];
     /**
      * String array of supported types. Possible values are:
      * - `bar`

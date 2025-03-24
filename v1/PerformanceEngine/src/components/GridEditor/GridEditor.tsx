@@ -3,11 +3,14 @@ import { useRef } from "react";
 import Draggable from "react-draggable";
 import { BarChart } from "@mui/x-charts/BarChart";
 
-import { GRID_HEIGHT, GRID_WIDTH, CELL_SIZE } from "../../types/Constants";
-import { GraphRequest } from "../../types/BackendInterfaces";
+import Visualization from "../Visualization/Visualization";
+
+import { GRID_HEIGHT, GRID_WIDTH, CELL_SIZE, MOCK_BAR_GRAPH_REQUEST_RETURN, BAR_CHART, PIE_CHART, MOCK_PIE_GRAPH_REQUEST_RETURN } from "../../types/Constants";
+import { GraphRequest, GraphRequestReturn } from "../../types/BackendInterfaces";
 
 interface ChartDataProps {
   req: GraphRequest;
+  ret: GraphRequestReturn|undefined;
   id: string;
   x: number;
   y: number;
@@ -15,7 +18,8 @@ interface ChartDataProps {
 
 type Props = { 
   new_graph_request?: GraphRequest, 
-  set_graph_request: (req: GraphRequest|undefined) => void }
+  set_graph_request: (req: GraphRequest|undefined) => void,
+  loadData: boolean, setLoaded: (val: boolean) => void }
 
 const GridEditor: React.FC<Props> = (props) => {
   const [charts, setCharts] = useState<ChartDataProps[]>([]);
@@ -25,13 +29,26 @@ const GridEditor: React.FC<Props> = (props) => {
     if (props.new_graph_request != undefined) {
       const req = props.new_graph_request;
       setCharts((prevCharts) => [...prevCharts, {
-        req: req, 
+        req: req,
+        ret: undefined,
         x: 0, 
         y: 0, 
         id: req.id + nextId.toString()
       }]);
       setNextId(nextId + 1);
       props.set_graph_request(undefined);
+    }
+
+    if (props.loadData) {
+      for (const chart of charts) {
+        if (chart.req.chartType == BAR_CHART) {
+          chart.ret = MOCK_BAR_GRAPH_REQUEST_RETURN;
+        } else if (chart.req.chartType == PIE_CHART) {
+          chart.ret = MOCK_PIE_GRAPH_REQUEST_RETURN;
+        }
+      }
+
+      props.setLoaded(false);
     }
   })
 
@@ -71,21 +88,16 @@ const GridEditor: React.FC<Props> = (props) => {
           <div
             ref={nodeRef}
             style={{
-              width: CELL_SIZE * 10,
-              height: CELL_SIZE * 10,
-              cursor: "grab",
-              background: "white",
-              boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.2)",
-              borderRadius: 0,
-              position: "absolute",
+                width: CELL_SIZE * 10,
+                height: CELL_SIZE * 10,
+                cursor: "grab",
+                background: "white",
+                boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.2)",
+                borderRadius: 0,
+                position: "absolute",
             }}
-          >
-            <BarChart
-              xAxis={[{ scaleType: "band", data: ["A", "B", "C"] }]}
-              series={[{ data: [4, 7, 2] }]}
-              width={CELL_SIZE * 10}
-              height={CELL_SIZE * 10}
-            />
+        >
+          <Visualization graph_type={chart.req.chartType} returned_data={chart.ret} />
           </div>
         </Draggable>
       ))}
