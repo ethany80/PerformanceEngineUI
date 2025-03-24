@@ -25,14 +25,16 @@ const GridEditor: React.FC<Props> = (props) => {
   const [charts, setCharts] = useState<ChartDataProps[]>([]);
   const [nextId, setNextId] = useState<number>(0);
 
+  // When parent updates props
   useEffect(() => {
     if (props.new_graph_request != undefined) {
       const req = props.new_graph_request;
       setCharts((prevCharts) => [...prevCharts, {
         req: req,
         ret: undefined,
-        x: 0, 
-        y: 0, 
+        // To completely fit in the grid, width needs to be cell size minus 1, and starting point needs to be offset
+        x: 1, 
+        y: 1, 
         id: req.id + nextId.toString()
       }]);
       setNextId(nextId + 1);
@@ -88,8 +90,8 @@ const GridEditor: React.FC<Props> = (props) => {
           <div
             ref={nodeRef}
             style={{
-                width: CELL_SIZE * 10,
-                height: CELL_SIZE * 10,
+                width: CELL_SIZE * 10 - 1,
+                height: CELL_SIZE * 10 - 1,
                 cursor: "grab",
                 background: "white",
                 boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.2)",
