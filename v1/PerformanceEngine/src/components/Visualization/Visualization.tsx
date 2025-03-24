@@ -23,6 +23,7 @@ const Visualization: React.FC<Props> = (props) => {
         !is2DArray(props.returned_data.data)) {
         chart = (<BarChart
             xAxis={[{ scaleType: "band", data: props.returned_data.axes }]}
+            axisHighlight={{x: 'none', y: 'none'}}
             series={[{ data: props.returned_data.data as number[] }]}
             width={CELL_SIZE * 10}
             height={CELL_SIZE * 10}
@@ -30,6 +31,7 @@ const Visualization: React.FC<Props> = (props) => {
     } else if (props.graph_type == BAR_CHART) {
         chart = (<BarChart
             className="undefined-chart"
+            axisHighlight={{x: 'none', y: 'none'}}
             xAxis={[{ scaleType: "band", data: ["A", "B", "C"] }]}
             series={[{ data: [4, 7, 2] }]}
             width={CELL_SIZE * 10}
@@ -56,6 +58,8 @@ const Visualization: React.FC<Props> = (props) => {
                     data: dataSeries
                 }
             ]}
+            axisHighlight={{x: 'none', y: 'none'}}
+            tooltip={{trigger: 'none'}}
             width={CELL_SIZE * 10}
             height={CELL_SIZE * 10}
         />)
@@ -71,6 +75,8 @@ const Visualization: React.FC<Props> = (props) => {
                     ]
                 }
             ]}
+            axisHighlight={{x: 'none', y: 'none'}}
+            tooltip={{trigger: 'none'}}
             width={CELL_SIZE * 10}
             height={CELL_SIZE * 10}
         />)
