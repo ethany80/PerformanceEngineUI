@@ -1,10 +1,10 @@
 import React from "react";
-import { BAR_CHART, CELL_SIZE, PIE_CHART } from "../../types/Constants";
+import { BAR_CHART, CELL_SIZE, LINE_CHART, PIE_CHART } from "../../types/Constants";
 import { BarChart } from "@mui/x-charts/BarChart";
 import { GraphRequestReturn } from "../../types/BackendInterfaces";
 
 import "./Visualization.css";
-import { PieChart, PieValueType } from "@mui/x-charts";
+import { LineChart, PieChart, PieValueType } from "@mui/x-charts";
 
 type Props = { graph_type: string, returned_data?: GraphRequestReturn }
 
@@ -25,8 +25,7 @@ const Visualization: React.FC<Props> = (props) => {
             axisHighlight={{x: 'none', y: 'none'}}
             series={[{ data: props.returned_data.data as number[] }]}
             width={CELL_SIZE * 10}
-            height={CELL_SIZE * 10}
-        />)
+            height={CELL_SIZE * 10} />)
     } else if (props.graph_type == BAR_CHART) {
         chart = (<BarChart
             className="undefined-chart"
@@ -34,8 +33,7 @@ const Visualization: React.FC<Props> = (props) => {
             xAxis={[{ scaleType: "band", data: ["A", "B", "C"] }]}
             series={[{ data: [4, 7, 2] }]}
             width={CELL_SIZE * 10}
-            height={CELL_SIZE * 10}
-        />)
+            height={CELL_SIZE * 10} />)
     } else if (
         props.graph_type == PIE_CHART &&
         props.returned_data &&
@@ -60,8 +58,7 @@ const Visualization: React.FC<Props> = (props) => {
             axisHighlight={{x: 'none', y: 'none'}}
             tooltip={{trigger: 'none'}}
             width={CELL_SIZE * 10}
-            height={CELL_SIZE * 10}
-        />)
+            height={CELL_SIZE * 10} />)
     } else if (props.graph_type == PIE_CHART) {
         chart = (<PieChart
             className="undefined-chart"
@@ -77,8 +74,37 @@ const Visualization: React.FC<Props> = (props) => {
             axisHighlight={{x: 'none', y: 'none'}}
             tooltip={{trigger: 'none'}}
             width={CELL_SIZE * 10}
-            height={CELL_SIZE * 10}
-        />)
+            height={CELL_SIZE * 10} />)
+    } else if (
+        props.graph_type == LINE_CHART &&
+        props.returned_data &&
+        props.returned_data.data &&
+        is2DArray(props.returned_data.data)) {
+
+        chart = (<LineChart
+            xAxis={[{data: (props.returned_data.data[0] as number[])}]}
+            series={[
+                {
+                    data: (props.returned_data.data[1] as number[])
+                }
+            ]}
+            axisHighlight={{x: 'none', y: 'none'}}
+            tooltip={{trigger: 'none'}}
+            width={CELL_SIZE * 10}
+            height={CELL_SIZE * 10} />)
+    } else if (props.graph_type == LINE_CHART) {
+        chart = (<LineChart
+            className="undefined-chart"
+            xAxis={[{data: [1, 2, 3, 5, 8, 10]}]}
+            series={[
+                {
+                    data: [2, 5.5, 2, 8.5, 1.5, 5]
+                }
+            ]}
+            axisHighlight={{x: 'none', y: 'none'}}
+            tooltip={{trigger: 'none'}}
+            width={CELL_SIZE * 10}
+            height={CELL_SIZE * 10} />)
     }
 
     return chart;

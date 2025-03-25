@@ -32,13 +32,21 @@ export const MOCK_PIE_GRAPH_REQUEST: GraphRequest = {
 };
 
 export const MOCK_BAR_GRAPH_REQUEST_RETURN: GraphRequestReturn = {
-    axes: ["D", "E", "F"],
+    axes: ["1/1", "2/1", "3/1"],
     data: [14, 3, 5],
     supportedTypes: [BAR_CHART]
 }
 
 export const MOCK_PIE_GRAPH_REQUEST_RETURN: GraphRequestReturn = {
-    axes: ["Cool", "OK", "Bad"],
-    data: [50, 20, 30],
+    axes: ["AAPL", "AMZN", "NVDA"],
+    data: [60, 10, 30],
     supportedTypes: [PIE_CHART]
 }
+
+export const MOCK_LINE_GRAPH_REQUEST_RETURN: GraphRequestReturn = {
+    axes: [],
+    data: [[1, 2, 3, 5, 8, 10], [8, 5.5, 26, 8.5, 5.5, 6]],
+    supportedTypes: [LINE_CHART]
+}
+
+export const MOCK_TITLE: string = "Loaded Report Title"

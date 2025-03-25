@@ -18,7 +18,7 @@ import { Button,
     SelectChangeEvent, 
     Stack,
     TextField } from '@mui/material';
-import { BAR_CHART, PIE_CHART } from './types/Constants';
+import { BAR_CHART, LINE_CHART, MOCK_TITLE, PIE_CHART } from './types/Constants';
 import { Close } from '@mui/icons-material';
 
 const App: React.FC = () => {
@@ -28,10 +28,12 @@ const App: React.FC = () => {
     const [ids, setIds] = useState<Map<string, DocumentInfo>>((): Map<string, DocumentInfo> => {
         const newMap = new Map<string, DocumentInfo>();
         newMap.set("ID1", { id: "ID1", availableTypes: ["Market Value", "Return"] });
-        newMap.set("ID2", { id: "ID2", availableTypes: ["Market Value", "Something Else"] });
+        newMap.set("ID2", { id: "ID2", availableTypes: ["Market Value", "Return"] });
         newMap.set("ID3", { id: "ID3", availableTypes: ["Market Value", "Return"] });
+        newMap.set("ID4", { id: "ID4", availableTypes: ["Asset Allocation"] });
         return newMap;
     });
+    const [title, setTitle] = useState<string>("Blank Report");
 
     // State for new chart dialog
     const [addDialogOpen, setAddDialogOpen] = useState<boolean>(false);
@@ -45,6 +47,7 @@ const App: React.FC = () => {
 
     const loadBtnClick = (_: any): void => {
         setLoadData(true);
+        setTitle(MOCK_TITLE);
     };
 
     const addBtnClick = (_: any): void => {
@@ -65,7 +68,11 @@ const App: React.FC = () => {
     const enableGraphType = () => {
         // Get allowed graph types given input
         setAddDialogGraphTypeEnabled(true);
-        setAddDialogAllowedGraphTypes([BAR_CHART, PIE_CHART]);
+        if (addDialogId === "ID4") {
+            setAddDialogAllowedGraphTypes([PIE_CHART]);
+        } else {
+            setAddDialogAllowedGraphTypes([BAR_CHART, LINE_CHART]);
+        }
     };
 
     const addBtnSubmit = () => {
@@ -209,7 +216,7 @@ const App: React.FC = () => {
                 </DialogActions>
             </Dialog>
 
-            <h1 className='hidden-on-print'>Page Title (could be set via API)</h1>
+            <h1 className='hidden-on-print'>{title}</h1>
             <Stack
                 direction={"row"}
                 className='hidden-on-print'

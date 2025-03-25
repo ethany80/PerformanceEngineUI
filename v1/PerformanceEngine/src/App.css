@@ -3,12 +3,17 @@
   justify-items: center;
 }
 
+body {
+ background: linear-gradient(30deg, rgb(97, 205, 255) 0%, #c1ccff 44%, rgba(0,212,255,1) 100%);
+}
+
 #grid-editor {
   display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: center;
   margin-top: 20px;
+  background-color: white;
 }
 
 @media print {
