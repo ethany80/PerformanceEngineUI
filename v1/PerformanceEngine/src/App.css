@@ -1,10 +1,9 @@
 .App {
   text-align: center;
   justify-items: center;
-}
-
-body {
- background: linear-gradient(30deg, rgb(97, 205, 255) 0%, #c1ccff 44%, rgba(0,212,255,1) 100%);
+  background: linear-gradient(30deg, rgb(97, 205, 255) 0%, #c1ccff 44%, rgba(0,212,255,1) 100%) 100% 100% no-repeat;
+  background-size: cover;
+  background-attachment: fixed;
 }
 
 #grid-editor {

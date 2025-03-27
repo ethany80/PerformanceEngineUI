@@ -19,7 +19,7 @@ import { Button,
     Stack,
     TextField } from '@mui/material';
 import { BAR_CHART, LINE_CHART, MOCK_TITLE, PIE_CHART } from './types/Constants';
-import { Close } from '@mui/icons-material';
+import { Add, Close, Download, Print, Reviews } from '@mui/icons-material';
 
 const App: React.FC = () => {
     // State for application and children
@@ -224,8 +224,12 @@ const App: React.FC = () => {
                 alignItems={'center'}
                 alignContent={'center'}
                 spacing={2} >
-                <Button variant="contained" onClick={addBtnClick}>Add Chart</Button>
-                <Button variant='contained' onClick={loadBtnClick}>Load Data</Button>
+                <Button variant="contained" onClick={addBtnClick} endIcon={<Add />}>Add Chart</Button>
+                <Button variant='contained' onClick={loadBtnClick} endIcon={<Download />}>Load Data</Button>
+                <Button variant='contained' onClick={window.print} endIcon={<Print />}>Print</Button>
+                <IconButton aria-label="delete" size="large">
+                    <Reviews fontSize="inherit" />
+                </IconButton>
             </Stack>
             <div id='grid-editor'>
                 <GridEditor
