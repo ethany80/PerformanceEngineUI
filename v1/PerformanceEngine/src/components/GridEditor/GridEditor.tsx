@@ -1,80 +1,122 @@
-import React, { useState } from "react";
-import { useRef } from "react";
+import React, { RefObject, useEffect, useRef, useState } from "react";
 import Draggable from "react-draggable";
-import { BarChart } from "@mui/x-charts/BarChart";
 
-const CELL_SIZE = 25; // Size of each grid cell
-const GRID_WIDTH = 850;
-const GRID_HEIGHT = 1100;
+import Visualization from "../Visualization/Visualization";
+
+import { GRID_HEIGHT, GRID_WIDTH, CELL_SIZE, MOCK_BAR_GRAPH_REQUEST_RETURN, BAR_CHART, PIE_CHART, MOCK_PIE_GRAPH_REQUEST_RETURN, LINE_CHART, MOCK_LINE_GRAPH_REQUEST_RETURN } from "../../types/Constants";
+import { GraphRequest, GraphRequestReturn } from "../../types/BackendInterfaces";
 
 interface ChartDataProps {
-  id: string;
-  x: number;
-  y: number;
+    req: GraphRequest;
+    ret: GraphRequestReturn | undefined;
+    id: string;
+    x: number;
+    y: number;
+    width: number;
+    height: number;
 }
 
-const GridEditor: React.FC = () => {
-  const [charts, setCharts] = useState<ChartDataProps[]>([
-    { id: "chart1", x: 0, y: 0 },
-    { id: "chart2", x: 200, y: 200 },
-  ]);
+type Props = {
+    new_graph_request?: GraphRequest,
+    set_graph_request: (req: GraphRequest | undefined) => void,
+    loadData: boolean, setLoaded: (val: boolean) => void
+}
 
-  const nodeRef = useRef(null);
+const GridEditor: React.FC<Props> = (props) => {
+    const [charts, setCharts] = useState<ChartDataProps[]>([]);
+    const [nextId, setNextId] = useState<number>(0);
 
-  // Handle dragging and snapping to the grid
-  const handleDrag = (e: any, data: any, id: string) => {
-    setCharts((prevCharts) =>
-      prevCharts.map((chart) =>
-        chart.id === id ? { ...chart, x: data.x, y: data.y } : chart
-      )
-    );
-  };
+    // When parent updates props
+    useEffect(() => {
+        if (props.new_graph_request != undefined) {
+            const req = props.new_graph_request;
+            setCharts((prevCharts) => [...prevCharts, {
+                req: req,
+                ret: undefined,
+                // To completely fit in the grid, width/height needs to be size minus 1, and starting point needs to be offset
+                x: 0,
+                y: 0,
+                width: CELL_SIZE * 10 - 1,
+                height: CELL_SIZE * 10 - 1,
+                id: req.id + nextId.toString()
+            }]);
+            setNextId(nextId + 1);
+            props.set_graph_request(undefined);
+        }
 
-  return (
-    <div
-      style={{
-        position: "relative",
-        width: GRID_WIDTH,
-        height: GRID_HEIGHT,
-        border: "1px solid black",
-        backgroundSize: `${CELL_SIZE}px ${CELL_SIZE}px`,
-        backgroundImage:
-          "linear-gradient(to right, gray 1px, transparent 1px), linear-gradient(to bottom, gray 1px, transparent 1px)",
-      }}
-    >
-      {/* Draggable Charts */}
-      {charts.map((chart) => (
-        <Draggable
-          nodeRef={nodeRef}
-          key={chart.id}
-          position={{ x: chart.x, y: chart.y }} // Set the position based on chart state
-          grid={[CELL_SIZE, CELL_SIZE]}
-          bounds={ "parent" }
-          onDrag={(e, data) => handleDrag(e, data, chart.id)} // Handle the drag
-        >
-          <div
-            ref={nodeRef}
+        if (props.loadData) {
+            for (const chart of charts) {
+                if (chart.req.chartType == BAR_CHART) {
+                    chart.ret = MOCK_BAR_GRAPH_REQUEST_RETURN;
+                } else if (chart.req.chartType == PIE_CHART) {
+                    chart.ret = MOCK_PIE_GRAPH_REQUEST_RETURN;
+                } else if (chart.req.chartType == LINE_CHART) {
+                    chart.ret = MOCK_LINE_GRAPH_REQUEST_RETURN;
+                }
+            }
+
+            props.setLoaded(false);
+        }
+    })
+
+    const nodeRef: RefObject<HTMLElement>|undefined = useRef(null);
+
+    // Handle dragging and snapping to the grid
+    const handleDrag = (_: any, data: any, id: string) => {
+        setCharts(charts.map((chart) =>
+                chart.id === id ? { ...chart, x: data.x, y: data.y } : chart
+            )
+        );
+    };
+
+    const removeChart = (id: string) => {
+        setCharts(charts.filter((prop) => {
+            return prop.id !== id;
+        }));
+    }
+
+    return (
+        <div id="grid"
             style={{
-              width: CELL_SIZE * 10,
-              height: CELL_SIZE * 10,
-              cursor: "grab",
-              background: "white",
-              boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.2)",
-              borderRadius: 8,
-              position: "absolute",
-            }}
-          >
-            <BarChart
-              xAxis={[{ scaleType: "band", data: ["A", "B", "C"] }]}
-              series={[{ data: [4, 7, 2] }]}
-              width={CELL_SIZE * 10}
-              height={CELL_SIZE * 10}
-            />
-          </div>
-        </Draggable>
-      ))}
-    </div>
-  );
+                position: "relative",
+                width: GRID_WIDTH,
+                height: GRID_HEIGHT,
+                border: "1px solid black",
+                backgroundSize: `${CELL_SIZE}px ${CELL_SIZE}px`,
+                backgroundImage:
+                    "linear-gradient(to right, gray 1px, transparent 1px), linear-gradient(to bottom, gray 1px, transparent 1px)",
+            }}>
+                <div style={{position: "relative", left: "1px", top: "1px", width: GRID_WIDTH - 1, height: GRID_HEIGHT - 1}}>
+            {/* Draggable Charts */}
+            {charts.map((chart) => (
+                <Draggable
+                    nodeRef={nodeRef}
+                    key={chart.id}
+                    position={{ x: chart.x, y: chart.y }} // Set the position based on chart state
+                    grid={[CELL_SIZE, CELL_SIZE]}
+                    bounds={"parent"}
+                    onDrag={(e, data) => handleDrag(e, data, chart.id)} // Handle the drag
+                >
+                    <div
+                        key={chart.id}
+                        ref={nodeRef}
+                        style={{
+                            width: chart.width,
+                            height: chart.height,
+                            cursor: "grab",
+                            background: "white",
+                            boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.2)",
+                            borderRadius: 0,
+                            position: "absolute",
+                        }}
+                        onDoubleClickCapture={() => {removeChart(chart.id);}}>
+                        <Visualization graph_type={chart.req.chartType} returned_data={chart.ret} />
+                    </div>
+                </Draggable>
+            ))}
+            </div>
+        </div>
+    );
 };
 
 export default GridEditor;
