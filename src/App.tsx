@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 
 
 import GridEditor from "./components/GridEditor/GridEditor";
@@ -18,12 +18,14 @@ import { Button,
     SelectChangeEvent, 
     Stack,
     TextField } from '@mui/material';
-import { BAR_CHART, LINE_CHART, MOCK_TITLE, PIE_CHART } from './types/Constants';
+import { BAR_CHART, CELL_SIZE, LINE_CHART, MOCK_TITLE, PIE_CHART } from './types/Constants';
 import { Add, Close, Download, Print, Reviews } from '@mui/icons-material';
+import { ChartDataPropContext, ChartDataProps } from './types/DisplayInterfaces';
 
 const App: React.FC = () => {
     // State for application and children
     const [newGraph, setNewGraph] = useState<GraphRequest | undefined>(undefined);
+    const [nextId, setNextId] = useState<number>(0);
     const [loadData, setLoadData] = useState<boolean>(false);
     const [ids, setIds] = useState<Map<string, DocumentInfo>>((): Map<string, DocumentInfo> => {
         const newMap = new Map<string, DocumentInfo>();
@@ -34,6 +36,8 @@ const App: React.FC = () => {
         return newMap;
     });
     const [title, setTitle] = useState<string>("Blank Report");
+
+    let vizContext = useContext(ChartDataPropContext);
 
     // State for new chart dialog
     const [addDialogOpen, setAddDialogOpen] = useState<boolean>(false);
@@ -83,6 +87,21 @@ const App: React.FC = () => {
             chartType: addDialogGraphType
 
         }
+
+        const newId = newReq.id + nextId.toString();
+        // refs.set(newId, React.useRef<HTMLDivElement>(null))
+        vizContext = [...vizContext, {
+            req: newReq,
+            ret: undefined,
+            // To completely fit in the grid, width/height needs to be size minus 1, and starting point needs to be offset
+            x: 0,
+            y: 0,
+            width: CELL_SIZE * 10 - 1,
+            height: CELL_SIZE * 10 - 1,
+            id: newId
+        }];
+        setNextId(nextId + 1);
+
         setNewGraph(newReq);
 
         resetAddDialog();

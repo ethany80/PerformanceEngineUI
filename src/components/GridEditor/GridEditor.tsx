@@ -1,20 +1,11 @@
-import React, { RefObject, useEffect, useRef, useState } from "react";
+import React, { RefObject, useContext, useEffect, useRef, useState } from "react";
 import Draggable from "react-draggable";
 
 import Visualization from "../Visualization/Visualization";
 
 import { GRID_HEIGHT, GRID_WIDTH, CELL_SIZE, MOCK_BAR_GRAPH_REQUEST_RETURN, BAR_CHART, PIE_CHART, MOCK_PIE_GRAPH_REQUEST_RETURN, LINE_CHART, MOCK_LINE_GRAPH_REQUEST_RETURN } from "../../types/Constants";
 import { GraphRequest, GraphRequestReturn } from "../../types/BackendInterfaces";
-
-interface ChartDataProps {
-    req: GraphRequest;
-    ret: GraphRequestReturn | undefined;
-    id: string;
-    x: number;
-    y: number;
-    width: number;
-    height: number;
-}
+import { ChartDataPropContext, ChartDataProps } from "../../types/DisplayInterfaces";
 
 type Props = {
     new_graph_request?: GraphRequest,
@@ -23,27 +14,13 @@ type Props = {
 }
 
 const GridEditor: React.FC<Props> = (props) => {
-    const [charts, setCharts] = useState<ChartDataProps[]>([]);
     const [nextId, setNextId] = useState<number>(0);
+    const charts = useContext(ChartDataPropContext);
+
+    let refs: Map<string, React.RefObject<HTMLDivElement>|undefined> = new Map();
 
     // When parent updates props
     useEffect(() => {
-        if (props.new_graph_request != undefined) {
-            const req = props.new_graph_request;
-            setCharts((prevCharts) => [...prevCharts, {
-                req: req,
-                ret: undefined,
-                // To completely fit in the grid, width/height needs to be size minus 1, and starting point needs to be offset
-                x: 0,
-                y: 0,
-                width: CELL_SIZE * 10 - 1,
-                height: CELL_SIZE * 10 - 1,
-                id: req.id + nextId.toString()
-            }]);
-            setNextId(nextId + 1);
-            props.set_graph_request(undefined);
-        }
-
         if (props.loadData) {
             for (const chart of charts) {
                 if (chart.req.chartType == BAR_CHART) {
@@ -59,17 +36,21 @@ const GridEditor: React.FC<Props> = (props) => {
         }
     })
 
-    const nodeRef: RefObject<HTMLElement>|undefined = useRef(null);
-
     // Handle dragging and snapping to the grid
     const handleDrag = (_: any, data: any, id: string) => {
-        setCharts(charts.map((chart) =>
-                chart.id === id ? { ...chart, x: data.x, y: data.y } : chart
-            )
-        );
+        let vizContext = useContext(ChartDataPropContext);
+        vizContext = vizContext.map((chart) => {
+            chart.id === id ? { ...chart, x: data.x, y: data.y } : chart
+        });
     };
 
     const removeChart = (id: string) => {
+        for (const prop of charts) {
+            if (prop.id === id) {
+                
+            }
+        }
+        
         setCharts(charts.filter((prop) => {
             return prop.id !== id;
         }));
@@ -90,7 +71,7 @@ const GridEditor: React.FC<Props> = (props) => {
             {/* Draggable Charts */}
             {charts.map((chart) => (
                 <Draggable
-                    nodeRef={nodeRef}
+                    nodeRef={refs.get(chart.id)}
                     key={chart.id}
                     position={{ x: chart.x, y: chart.y }} // Set the position based on chart state
                     grid={[CELL_SIZE, CELL_SIZE]}
@@ -99,7 +80,7 @@ const GridEditor: React.FC<Props> = (props) => {
                 >
                     <div
                         key={chart.id}
-                        ref={nodeRef}
+                        ref={refs.get(chart.id)}
                         style={{
                             width: chart.width,
                             height: chart.height,
