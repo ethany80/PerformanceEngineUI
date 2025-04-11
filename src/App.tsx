@@ -18,7 +18,7 @@ import { Button,
     SelectChangeEvent, 
     Stack,
     TextField } from '@mui/material';
-import { BAR_CHART, CELL_SIZE, LINE_CHART, MOCK_TITLE, PIE_CHART } from './types/Constants';
+import { BAR_CHART, CELL_SIZE, LINE_CHART, MOCK_BAR_GRAPH_REQUEST_RETURN, MOCK_LINE_GRAPH_REQUEST_RETURN, MOCK_PIE_GRAPH_REQUEST_RETURN, MOCK_TITLE, PIE_CHART } from './types/Constants';
 import { Add, Close, Download, Print, Reviews } from '@mui/icons-material';
 import { VizDataProps } from './types/DisplayInterfaces';
 
@@ -45,11 +45,14 @@ const App: React.FC = () => {
     const [addDialogAllowedGraphTypes, setAddDialogAllowedGraphTypes] = useState<string[]>([]);
     const [addDialogGraphTypeEnabled, setAddDialogGraphTypeEnabled] = useState<boolean>(false);
 
-    const loadBtnClick = (_: any): void => {
+    const loadBtnClick = (): void => {
+        for (const [, viz] of Object.entries(visualizations)) {
+            viz.ret = requestData(viz.req);
+        }
         setTitle(MOCK_TITLE);
     };
 
-    const addBtnClick = (_: any): void => {
+    const addBtnClick = (): void => {
         setAddDialogOpen(true);
     };
 
@@ -83,6 +86,7 @@ const App: React.FC = () => {
 
         }
 
+        
         const newId = newReq.id + nextId.toString();
         setVisualizations(prev => {
             return {...prev, 
@@ -105,6 +109,18 @@ const App: React.FC = () => {
         setAddDialogOpen(false);
     };
 
+    const requestData = (req: GraphRequest) => {
+        if (req.chartType == BAR_CHART) {
+            return MOCK_BAR_GRAPH_REQUEST_RETURN;
+        } else if (req.chartType == PIE_CHART) {
+            return MOCK_PIE_GRAPH_REQUEST_RETURN;
+        } else if (req.chartType == LINE_CHART) {
+            return MOCK_LINE_GRAPH_REQUEST_RETURN;
+        }
+
+        return undefined;
+    };
+
     const updateCoords = (id: string, x: number, y: number) => {
         setSelectedId(id);
         setVisualizations(prev => {
@@ -116,7 +132,7 @@ const App: React.FC = () => {
     };
 
     const removeChart = (id: string) => {
-        // Destructuring wizardry I didn't realize existed until now
+        // Perform destructuring wizardry I didn't realize existed until now.
         setVisualizations(prev => {
             const { [id]: _, ...others } = prev;
             return others;
