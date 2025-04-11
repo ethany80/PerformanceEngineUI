@@ -150,7 +150,7 @@ When generating a new report, backend clones the preset and gives the client the
 ```
 
 # Save Report (Client -> Server)
-Since the client does cannot to modify the available accounts in a report (yet...), only send the visualizations
+Since the client cannot modify the available accounts in a report (yet...), only send the visualizations
 with their scaling and location info.
 
 `POST /api/save`
