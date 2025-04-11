@@ -65,16 +65,11 @@ const GridEditor: React.FC<Props> = (props) => {
                 >
                     <div
                         key={id + "_div"}
-                        className={(props.selected && props.selected == id) ? "selected-viz" : "unselected" }
+                        className={((props.selected && props.selected == id) ? "selected-viz" : "unselected-viz") + " viz"}
                         ref={getNodeRef(id)}
                         style={{
                             width: chart.width,
-                            height: chart.height,
-                            cursor: "grab",
-                            background: "white",
-                            boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.2)",
-                            borderRadius: 0,
-                            position: "absolute"
+                            height: chart.height
                         }}
                         onDoubleClickCapture={(target) => {target.stopPropagation(); removeChart(id);}}
                         onClickCapture={() => { props.set_selected(id) }}>
