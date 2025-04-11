@@ -36,3 +36,9 @@ html, body {
     margin-top: 0px !important;
   }
 }
+
+.selected-viz {
+  border: dotted;
+  border-width: 2px;
+  border-color: red;
+}

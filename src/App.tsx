@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react';
+import { useState } from 'react';
 
 
 import GridEditor from "./components/GridEditor/GridEditor";
@@ -20,24 +20,20 @@ import { Button,
     TextField } from '@mui/material';
 import { BAR_CHART, CELL_SIZE, LINE_CHART, MOCK_TITLE, PIE_CHART } from './types/Constants';
 import { Add, Close, Download, Print, Reviews } from '@mui/icons-material';
-import { ChartDataPropContext, ChartDataProps } from './types/DisplayInterfaces';
+import { VizDataProps } from './types/DisplayInterfaces';
 
 const App: React.FC = () => {
     // State for application and children
-    const [newGraph, setNewGraph] = useState<GraphRequest | undefined>(undefined);
+    const [visualizations, setVisualizations] = useState<Record<string, VizDataProps>>({});
     const [nextId, setNextId] = useState<number>(0);
-    const [loadData, setLoadData] = useState<boolean>(false);
-    const [ids, setIds] = useState<Map<string, DocumentInfo>>((): Map<string, DocumentInfo> => {
-        const newMap = new Map<string, DocumentInfo>();
-        newMap.set("ID1", { id: "ID1", availableTypes: ["Market Value", "Return"] });
-        newMap.set("ID2", { id: "ID2", availableTypes: ["Market Value", "Return"] });
-        newMap.set("ID3", { id: "ID3", availableTypes: ["Market Value", "Return"] });
-        newMap.set("ID4", { id: "ID4", availableTypes: ["Asset Allocation"] });
-        return newMap;
+    const [selectedId, setSelectedId] = useState<string|undefined>(undefined);
+    const [ids, setIds] = useState<Record<string, DocumentInfo>>({
+        "ID1": { id: "ID1", availableTypes: ["Market Value", "Return"] },
+        "ID2": { id: "ID2", availableTypes: ["Market Value", "Return"] },
+        "ID3": { id: "ID3", availableTypes: ["Market Value", "Return"] },
+        "ID4": { id: "ID4", availableTypes: ["Asset Allocation"] }
     });
     const [title, setTitle] = useState<string>("Blank Report");
-
-    let vizContext = useContext(ChartDataPropContext);
 
     // State for new chart dialog
     const [addDialogOpen, setAddDialogOpen] = useState<boolean>(false);
@@ -50,7 +46,6 @@ const App: React.FC = () => {
     const [addDialogGraphTypeEnabled, setAddDialogGraphTypeEnabled] = useState<boolean>(false);
 
     const loadBtnClick = (_: any): void => {
-        setLoadData(true);
         setTitle(MOCK_TITLE);
     };
 
@@ -80,7 +75,7 @@ const App: React.FC = () => {
     };
 
     const addBtnSubmit = () => {
-        let newReq: GraphRequest = {
+        const newReq: GraphRequest = {
             id: addDialogId,
             type: addDialogType,
             range: [addDialogRange1, addDialogRange2],
@@ -89,26 +84,49 @@ const App: React.FC = () => {
         }
 
         const newId = newReq.id + nextId.toString();
-        // refs.set(newId, React.useRef<HTMLDivElement>(null))
-        vizContext = [...vizContext, {
-            req: newReq,
-            ret: undefined,
-            // To completely fit in the grid, width/height needs to be size minus 1, and starting point needs to be offset
-            x: 0,
-            y: 0,
-            width: CELL_SIZE * 10 - 1,
-            height: CELL_SIZE * 10 - 1,
-            id: newId
-        }];
+        setVisualizations(prev => {
+            return {...prev, 
+                [newId]: {
+                    req: newReq,
+                    ret: undefined,
+                    // To completely fit in the grid, width/height needs to be size minus 1, and starting point needs to be offset
+                    x: 0,
+                    y: 0,
+                    width: CELL_SIZE * 10 - 2,
+                    height: CELL_SIZE * 10 - 1,
+                }
+            }
+        });
         setNextId(nextId + 1);
-
-        setNewGraph(newReq);
-
         resetAddDialog();
     };
 
     const closeAddDialog = () => {
         setAddDialogOpen(false);
+    };
+
+    const updateCoords = (id: string, x: number, y: number) => {
+        setSelectedId(id);
+        setVisualizations(prev => {
+            return {
+                ...prev,
+                [id]: { ...prev[id], x: x, y: y }
+            };
+        });
+    };
+
+    const removeChart = (id: string) => {
+        // Destructuring wizardry I didn't realize existed until now
+        setVisualizations(prev => {
+            const { [id]: _, ...others } = prev;
+            return others;
+        })
+    };
+
+    const deleteBtn = () => {
+        if (selectedId) {
+            removeChart(selectedId);
+        }
     };
 
     return (
@@ -154,8 +172,8 @@ const App: React.FC = () => {
                                             setAddDialogGraphTypeEnabled(false);
                                         }
                                     }}>
-                                    {Array.from(ids.entries()).map((id) => (
-                                        <MenuItem value={id[1].id}>{id[1].id}</MenuItem>
+                                    {Object.entries(ids).map((id) => (
+                                        <MenuItem key={id[1].id} value={id[1].id}>{id[1].id}</MenuItem>
                                     ))}
                                 </Select>
                             </FormControl>
@@ -174,8 +192,8 @@ const App: React.FC = () => {
                                             setAddDialogGraphTypeEnabled(false);
                                         }
                                     }}>
-                                    {ids.get(addDialogId)?.availableTypes.map((type) => (
-                                        <MenuItem value={type}>{type}</MenuItem>
+                                    {ids[addDialogId]?.availableTypes.map((type) => (
+                                        <MenuItem key={type} value={type}>{type}</MenuItem>
                                     ))}
                                 </Select>
                             </FormControl>
@@ -223,7 +241,7 @@ const App: React.FC = () => {
                                 }}
                                 disabled={!addDialogGraphTypeEnabled}>
                                 {addDialogAllowedGraphTypes.map((type) => (
-                                    <MenuItem value={type}>{type}</MenuItem>
+                                    <MenuItem key={type} value={type}>{type}</MenuItem>
                                 ))}
                             </Select>
                         </FormControl>
@@ -245,6 +263,7 @@ const App: React.FC = () => {
                 spacing={2} >
                 <Button variant="contained" onClick={addBtnClick} endIcon={<Add />}>Add Chart</Button>
                 <Button variant='contained' onClick={loadBtnClick} endIcon={<Download />}>Load Data</Button>
+                <Button variant='contained' onClick={deleteBtn}>Delete</Button>
                 <Button variant='contained' onClick={window.print} endIcon={<Print />}>Print</Button>
                 <IconButton aria-label="delete" size="large">
                     <Reviews fontSize="inherit" />
@@ -252,10 +271,12 @@ const App: React.FC = () => {
             </Stack>
             <div id='grid-editor'>
                 <GridEditor
-                    new_graph_request={newGraph}
-                    set_graph_request={setNewGraph}
-                    loadData={loadData}
-                    setLoaded={setLoadData} />
+                    update_coords={updateCoords}
+                    set_selected={setSelectedId}
+                    remove_chart={removeChart}
+                    charts={visualizations}
+                    selected={selectedId}
+                    />
             </div>
         </div>
     );
