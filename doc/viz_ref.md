@@ -130,7 +130,6 @@ When generating a new report, backend clones the preset and gives the client the
 ```
 - ## Pie
   - Slices
-    - Probably `[{value: x, label: y}, ...]`
 ```json
 {
   "slices": [
