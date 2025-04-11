@@ -6,8 +6,8 @@
 ```json
 {
   "title": "Chart Name",
-  "type": /* use name specified in Constants.ts */,
-  "chart-data": { /* info specified below */ }
+  "type": "/* use name specified in Constants.ts */",
+  "chart-data": { "/* info specified below */": "" }
 }
 ```
 - ## Single bar
@@ -39,8 +39,8 @@
 ```json
 {
   "points": [
-    {x: 1, y: 2},
-    {x: 3, y: 4}
+    {"x": 1, "y": 2},
+    {"x": 3, "y": 4}
   ]
 }
 ```
@@ -76,8 +76,8 @@
   - List number of cols, then just an array, frontend can split where necessary
 ```json
 {
-  cols: 2,
-  headers: ['header1', 'header2'],
-  datapoints: [x,y,z,a,b,c, ...]
+  "cols": 2,
+  "headers": ["header1", "header2"],
+  "datapoints": [1,2,3,4,5,6,7, "..."]
 }
 ```
