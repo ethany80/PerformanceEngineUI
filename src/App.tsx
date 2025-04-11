@@ -96,7 +96,7 @@ const App: React.FC = () => {
                     // To completely fit in the grid, width/height needs to be size minus 1, and starting point needs to be offset
                     x: 0,
                     y: 0,
-                    width: CELL_SIZE * 10 - 2,
+                    width: CELL_SIZE * 10 - 1,
                     height: CELL_SIZE * 10 - 1,
                 }
             }
