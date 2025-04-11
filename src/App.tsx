@@ -46,9 +46,11 @@ const App: React.FC = () => {
     const [addDialogGraphTypeEnabled, setAddDialogGraphTypeEnabled] = useState<boolean>(false);
 
     const loadBtnClick = (): void => {
-        for (const [, viz] of Object.entries(visualizations)) {
+        const updatedVisualizations = {...visualizations};
+        for (const [, viz] of Object.entries(updatedVisualizations)) {
             viz.ret = requestData(viz.req);
         }
+        setVisualizations(updatedVisualizations);        
         setTitle(MOCK_TITLE);
     };
 
