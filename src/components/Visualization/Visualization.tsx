@@ -1,4 +1,4 @@
-import React from "react";
+import React, { JSX } from "react";
 import { BAR_CHART, CELL_SIZE, LINE_CHART, PIE_CHART } from "../../types/Constants";
 import { BarChart } from "@mui/x-charts/BarChart";
 import { GraphRequestReturn, PieRequestReturn, SingleBarRequestReturn, SingleLineRequestReturn } from "../../types/BackendInterfaces";
@@ -94,7 +94,17 @@ const Visualization: React.FC<Props> = (props) => {
             height={CELL_SIZE * 10} />)
     }
 
-    return chart;
+    return (
+        <div className="viz-div">
+            {props.returned_data?.title &&
+                <span>
+                    <h5 className="viz-title">{props.returned_data.title}</h5>
+                    <hr className="viz-title" />
+                </span>
+            }
+            {chart}
+        </div>
+    );
 };
 
 export default Visualization;

@@ -32,7 +32,7 @@ export const MOCK_PIE_GRAPH_REQUEST: GraphRequest = {
 };
 
 export const MOCK_BAR_GRAPH_REQUEST_RETURN: GraphRequestReturn = {
-    title: undefined,
+    title: "Bar",
     type: BAR_CHART,
     chartData: {
         xAxis: ["1/1", "2/1", "3/1"],
@@ -41,7 +41,7 @@ export const MOCK_BAR_GRAPH_REQUEST_RETURN: GraphRequestReturn = {
 }
 
 export const MOCK_PIE_GRAPH_REQUEST_RETURN: GraphRequestReturn = {
-    title: undefined,
+    title: "Pie",
     type: PIE_CHART,
     chartData: {
         slices: [
@@ -53,7 +53,7 @@ export const MOCK_PIE_GRAPH_REQUEST_RETURN: GraphRequestReturn = {
 }
 
 export const MOCK_LINE_GRAPH_REQUEST_RETURN: GraphRequestReturn = {
-    title: undefined,
+    title: "Line",
     type: LINE_CHART,
     chartData: {
         points: [
