@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-import { BAR_CHART, CELL_SIZE, LINE_CHART, PIE_CHART } from '../types/Constants';
+import { BAR_CHART, CELL_SIZE, LINE_CHART, MULTI_LINE_CHART, PIE_CHART } from '../types/Constants';
 import { DocumentInfo, GraphRequest } from '../types/BackendInterfaces';
 import { VizDataProps } from '../types/DisplayInterfaces';
 
@@ -62,7 +62,7 @@ const AddDialog: React.FC<Props> = (props) => {
         if (addDialogId === "ID4") {
             setAddDialogAllowedGraphTypes([PIE_CHART]);
         } else {
-            setAddDialogAllowedGraphTypes([BAR_CHART, LINE_CHART]);
+            setAddDialogAllowedGraphTypes([BAR_CHART, LINE_CHART, MULTI_LINE_CHART]);
         }
     };
 

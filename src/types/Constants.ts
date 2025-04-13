@@ -67,4 +67,29 @@ export const MOCK_LINE_GRAPH_REQUEST_RETURN: GraphRequestReturn = {
     }
 }
 
+export const MOCK_MULTI_LINE_GRAPH_REQUEST_RETURN: GraphRequestReturn = {
+    title: "Line 2",
+    type: MULTI_LINE_CHART,
+    chartData: {
+        points: {
+            "A": [
+                {x: 1, y: 8},
+                {x: 2, y: 5.5},
+                {x: 3, y: 26},
+                {x: 5, y: 8.5},
+                {x: 8, y: 5.5},
+                {x: 10, y: 6},
+            ],
+            "B": [
+                {x: 1, y: 10},
+                {x: 2, y: 3.5},
+                {x: 3, y: 18},
+                {x: 4, y: 12.5},
+                {x: 8, y: 4.5},
+                {x: 10, y: 1},
+            ]
+        },
+    }
+}
+
 export const MOCK_TITLE: string = "Loaded Report Title"
