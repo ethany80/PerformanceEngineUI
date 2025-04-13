@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useParams } from 'react-router';
 
 import "./App.css";
 import GridEditor from "./components/GridEditor/GridEditor";
@@ -19,6 +20,7 @@ interface DocumentObject {
 
 const App: React.FC = () => {
     // State for application and children
+    const { documentId } = useParams();
     const [visualizations, setVisualizations] = useState<Record<string, VizDataProps>>({});
     const [nextId, setNextId] = useState<number>(0);
     const [selectedId, setSelectedId] = useState<string|undefined>(undefined);
