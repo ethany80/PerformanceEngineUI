@@ -40,6 +40,19 @@ export const MOCK_BAR_GRAPH_REQUEST_RETURN: GraphRequestReturn = {
     }
 }
 
+export const MOCK_MULTI_BAR_GRAPH_REQUEST_RETURN: GraphRequestReturn = {
+    title: "Multi Bar!",
+    type: MULTI_BAR_CHART,
+    chartData: {
+        xAxis: ["1/1", "2/1", "3/1"],
+        values: {
+            "A": [1, 4, 6],
+            "B": [8, 3, 4],
+            "C": [4, 4, 3]
+        }
+    }
+}
+
 export const MOCK_PIE_GRAPH_REQUEST_RETURN: GraphRequestReturn = {
     title: "Pie",
     type: PIE_CHART,
@@ -89,6 +102,17 @@ export const MOCK_MULTI_LINE_GRAPH_REQUEST_RETURN: GraphRequestReturn = {
                 {x: 10, y: 1},
             ]
         },
+    }
+}
+
+export const MOCK_TABLE_REQUEST_RETURN: GraphRequestReturn = {
+    title: "Table!",
+    type: TABLE_CHART,
+    chartData: {
+        cols: 3,
+        headers: ["Col 1", "Col 2", "Col 3"],
+        dataType: "number",
+        data: [1, 2, 3, 4, 5, 6, 7, 8, 9]
     }
 }
 

@@ -4,7 +4,7 @@ import "./App.css";
 import GridEditor from "./components/GridEditor/GridEditor";
 import AddDialog from "./components/AddDialog";
 
-import { BAR_CHART, LINE_CHART, MOCK_BAR_GRAPH_REQUEST_RETURN, MOCK_LINE_GRAPH_REQUEST_RETURN, MOCK_MULTI_LINE_GRAPH_REQUEST_RETURN, MOCK_PIE_GRAPH_REQUEST_RETURN, MOCK_TITLE, MULTI_LINE_CHART, PIE_CHART } from './types/Constants';
+import { BAR_CHART, LINE_CHART, MOCK_BAR_GRAPH_REQUEST_RETURN, MOCK_LINE_GRAPH_REQUEST_RETURN, MOCK_MULTI_BAR_GRAPH_REQUEST_RETURN, MOCK_MULTI_LINE_GRAPH_REQUEST_RETURN, MOCK_PIE_GRAPH_REQUEST_RETURN, MOCK_TABLE_REQUEST_RETURN, MOCK_TITLE, MULTI_BAR_CHART, MULTI_LINE_CHART, PIE_CHART, TABLE_CHART } from './types/Constants';
 import { DocumentInfo, GraphRequest } from './types/BackendInterfaces';
 import { VizDataProps } from './types/DisplayInterfaces';
 
@@ -50,12 +50,16 @@ const App: React.FC = () => {
     const requestData = (req: GraphRequest) => {
         if (req.chartType == BAR_CHART) {
             return MOCK_BAR_GRAPH_REQUEST_RETURN;
+        } else if (req.chartType == MULTI_BAR_CHART) {
+            return MOCK_MULTI_BAR_GRAPH_REQUEST_RETURN;
         } else if (req.chartType == PIE_CHART) {
             return MOCK_PIE_GRAPH_REQUEST_RETURN;
         } else if (req.chartType == LINE_CHART) {
             return MOCK_LINE_GRAPH_REQUEST_RETURN;
         } else if  (req.chartType == MULTI_LINE_CHART) {
             return MOCK_MULTI_LINE_GRAPH_REQUEST_RETURN;
+        } else if (req.chartType == TABLE_CHART) {
+            return MOCK_TABLE_REQUEST_RETURN;
         }
 
         return undefined;

@@ -1,11 +1,12 @@
 import React, { JSX } from "react";
-import { BAR_CHART, CELL_SIZE, LINE_CHART, MULTI_LINE_CHART, PIE_CHART } from "../../types/Constants";
+import { BAR_CHART, CELL_SIZE, LINE_CHART, MULTI_BAR_CHART, MULTI_LINE_CHART, PIE_CHART, TABLE_CHART } from "../../types/Constants";
 import { BarChart } from "@mui/x-charts/BarChart";
-import { GraphRequestReturn, MultiLineRequestReturn, PieRequestReturn, SingleBarRequestReturn, SingleLineRequestReturn } from "../../types/BackendInterfaces";
+import { GraphRequestReturn, MultiBarRequestReturn, MultiLineRequestReturn, PieRequestReturn, SingleBarRequestReturn, SingleLineRequestReturn, TableRequestReturn } from "../../types/BackendInterfaces";
 
 import "./Visualization.css";
 import { LineChart, PieChart, PieValueType } from "@mui/x-charts";
 import { DatasetElementType } from "@mui/x-charts/internals";
+import { Table, TableBody, TableCell, TableHead, TableRow } from "@mui/material";
 
 type Props = { graph_type: string, returned_data?: GraphRequestReturn }
 
@@ -27,6 +28,31 @@ const Visualization: React.FC<Props> = (props) => {
             axisHighlight={{x: 'none', y: 'none'}}
             xAxis={[{ scaleType: "band", data: ["A", "B", "C"] }]}
             series={[{ data: [4, 7, 2] }]}
+            width={CELL_SIZE * 10}
+            height={CELL_SIZE * 10} />)
+    } else if (props.graph_type == MULTI_BAR_CHART && props.returned_data?.type == MULTI_BAR_CHART) {
+        const data = props.returned_data.chartData as MultiBarRequestReturn;
+
+        chart = (<BarChart
+            xAxis={[{ scaleType: "band", 
+                data: data.xAxis
+                }]}
+            axisHighlight={{x: 'none', y: 'none'}}
+            series={ Object.entries(data.values).map(([], i) => {
+                return { 
+                    data: Object.entries(data.values).map(([, val]) => {
+                        return val[i];
+                    }) 
+                }
+            }) }
+            width={CELL_SIZE * 10}
+            height={CELL_SIZE * 10} />)
+    } else if (props.graph_type == MULTI_BAR_CHART) {
+        chart = (<BarChart
+            className="undefined-chart"
+            axisHighlight={{x: 'none', y: 'none'}}
+            xAxis={[{ scaleType: "band", data: ["A", "B", "C"] }]}
+            series={[{ data: [4, 7, 2] }, { data: [3, 4, 6] }, { data: [8, 1, 4] }]}
             width={CELL_SIZE * 10}
             height={CELL_SIZE * 10} />)
     } else if (props.graph_type == PIE_CHART && props.returned_data?.type == PIE_CHART) {
@@ -119,6 +145,32 @@ const Visualization: React.FC<Props> = (props) => {
             tooltip={{trigger: 'none'}}
             width={CELL_SIZE * 10}
             height={CELL_SIZE * 10} />)
+    } else if (props.graph_type == TABLE_CHART && props.returned_data?.type == TABLE_CHART) {
+        const data = props.returned_data.chartData as TableRequestReturn;
+
+        chart = (<p>Not yet implemented</p>)
+    } else if (props.graph_type == TABLE_CHART) {
+        chart = (<Table>
+            <TableHead className="table-header">
+                <TableRow>
+                    <TableCell className="table-header">A Header</TableCell>
+                    <TableCell>B Header</TableCell>
+                    <TableCell>C Header</TableCell>
+                </TableRow>
+            </TableHead>
+            <TableBody>
+                <TableRow>
+                    <TableCell component="th" scope="row">A</TableCell>
+                    <TableCell>B</TableCell>
+                    <TableCell>C</TableCell>
+                </TableRow>
+                <TableRow>
+                    <TableCell component="th" scope="row">D</TableCell>
+                    <TableCell>E</TableCell>
+                    <TableCell>F</TableCell>
+                </TableRow>
+            </TableBody>
+            </Table>)
     }
 
     return (

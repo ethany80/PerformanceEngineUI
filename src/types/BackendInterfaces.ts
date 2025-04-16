@@ -105,7 +105,7 @@ export interface TableRequestReturn {
     /** Data type of each cell (valid values: 'string', 'number'). */
     dataType: string;
     /** Flattened row-major array of table values. */
-    data: string[];
+    data: string[]|number[];
 }
 
 
