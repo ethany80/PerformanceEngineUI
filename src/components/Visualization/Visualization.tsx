@@ -147,15 +147,39 @@ const Visualization: React.FC<Props> = (props) => {
             height={CELL_SIZE * 10} />)
     } else if (props.graph_type == TABLE_CHART && props.returned_data?.type == TABLE_CHART) {
         const data = props.returned_data.chartData as TableRequestReturn;
+        let rows = []
+        for (let i = 0; i < data.data.length; i+= data.cols) {
+            rows.push(data.data.slice(i, i + data.cols));
+        }
 
-        chart = (<p>Not yet implemented</p>)
+        chart = (<Table>
+            <TableHead className="table-header">
+                <TableRow>
+                    {data.headers.map((cell) => (
+                        <TableCell className="table-header">{cell}</TableCell>
+                    )) }
+                </TableRow>
+            </TableHead>
+            <TableBody>
+                {rows.map((row) => (
+                    <TableRow>
+                        {row.map((val, idx) => (
+                            idx == 0 ?
+                            <TableCell component="th" scope="row">{val}</TableCell>
+                            :
+                            <TableCell>{val}</TableCell>
+                        ))}
+                    </TableRow>
+                )) }
+            </TableBody>
+            </Table>)
     } else if (props.graph_type == TABLE_CHART) {
         chart = (<Table>
             <TableHead className="table-header">
                 <TableRow>
                     <TableCell className="table-header">A Header</TableCell>
-                    <TableCell>B Header</TableCell>
-                    <TableCell>C Header</TableCell>
+                    <TableCell className="table-header">B Header</TableCell>
+                    <TableCell className="table-header">C Header</TableCell>
                 </TableRow>
             </TableHead>
             <TableBody>

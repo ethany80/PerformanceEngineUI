@@ -9,5 +9,5 @@
 
 .table-header {
     background-color: rgb(20, 114, 238);
-    color:white;
+    color:white !important;
 }
