@@ -29,7 +29,7 @@ When generating a new report, backend clones the preset and gives the client the
   "data-types": [
     "Market Value": { "types": ["line", "multi-line", "bar", "table"], "range2-enabled": true, "can-be-multiple": true },
     "Return": { "types": ["line", "multi-line", "bar", "table"], "range2-enabled": true, "can-be-multiple": true },
-    "Allocation": { "types": ["pie", "table"], "range2-enabled": false, "can-be-multiple": true }
+    "Allocation": { "types": ["pie", "table"], "range2-enabled": false, "can-be-multiple": false }
   ],
   "visualizations": {
     "ID10": {
