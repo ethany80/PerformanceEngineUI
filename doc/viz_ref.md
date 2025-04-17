@@ -23,9 +23,14 @@ When generating a new report, backend clones the preset and gives the client the
   "entities": {
     "acc01": { "name": "Account Name!", "types": ["Return", "Market Value", "Allocation"] }
     "acc02": { "name": "Account Name 2", "types": ["Return", "Market Value", "Allocation"] }
-    "pos01": { "name": "Position Name!", "types": ["Market Value", "Return"], "parent": "acc01", "symbol": "AAAA" }
+    "pos01": { "name": "Position Name!", "types": ["Market Value", "Return"], "parent": "acc01" }
     "...": ["etc."]
   },
+  "data-types": [
+    "Market Value": { "types": ["line", "multi-line", "bar", "table"], "range2-enabled": true, "can-be-multiple": true },
+    "Return": { "types": ["line", "multi-line", "bar", "table"], "range2-enabled": true, "can-be-multiple": true },
+    "Allocation": { "types": ["pie", "table"], "range2-enabled": false, "can-be-multiple": true }
+  ],
   "visualizations": {
     "ID10": {
       "width": 249,
@@ -146,6 +151,7 @@ When generating a new report, backend clones the preset and gives the client the
 {
   "cols": 2,
   "headers": ["header1", "header2"],
+  "separate-bottom": true,
   "datapoints": [1,2,3,4,5,6,7, "..."]
 }
 ```
