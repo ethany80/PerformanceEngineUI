@@ -76,11 +76,13 @@ When generating a new report, backend clones the preset and gives the client the
 - ## General / All
   - Chart title
   - Chart type
+  - Number of data points
   - Chart-Specific data
 ```json
 {
   "title": "Chart Name",
   "type": "/* use name specified in Constants.ts */",
+  "data-points": 10,
   "chart-data": { "/* info specified below */": "" }
 }
 ```
