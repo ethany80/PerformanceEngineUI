@@ -23,7 +23,7 @@ When generating a new report, backend clones the preset and gives the client the
   "entities": {
     "acc01": { "name": "Account Name!", "types": ["Return", "Market Value", "Allocation"] }
     "acc02": { "name": "Account Name 2", "types": ["Return", "Market Value", "Allocation"] }
-    "pos01": { "name": "Position Name!", "types": ["Market Value", "Return"], "parent": "acc01" }
+    "pos01": { "name": "Position Name!", "types": ["Market Value", "Return"], "parent": "acc01", "symbol": "AAAA" }
     "...": ["etc."]
   },
   "visualizations": {
