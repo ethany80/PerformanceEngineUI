@@ -20,9 +20,10 @@ When generating a new report, backend clones the preset and gives the client the
 ## Server Response:
 ```json
 {
-  "accounts": {
-    "id1": ["bar", "line"],
-    "id2": ["pie"],
+  "entities": {
+    "acc01": { "types": ["Return", "Market Value", "Allocation"] }
+    "acc02": { "types": ["Return", "Market Value", "Allocation"] }
+    "pos01": { "types": ["Market Value", "Return"], "parent": "acc01" }
     "...": ["etc."]
   },
   "visualizations": {
