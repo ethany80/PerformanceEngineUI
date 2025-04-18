@@ -42,6 +42,7 @@ If valid layout-id:
         "id": "AccID1",
         "type": "Market Value",
         "range": ["01/25", "02/25"],
+        "data-points": 10,
         "chartType": "bar"
       }
     },
@@ -54,6 +55,7 @@ If valid layout-id:
         "id": "AccID4",
         "type": "Asset Allocation",
         "range": ["01/25", "02/25"],
+        "data-points": 10,
         "chartType": "pie"
       }
     },
@@ -172,11 +174,12 @@ The return of this can be an empty array if none are available.
 ### Server Response
 ```json
 [
-  "id1",
-  "id2",
-  "etc..."
+  "template-id-1": "Template Name",
+  "template-id-2": "Template Name 2",
+  "template-id-3": "Template Name 3"
 ]
 ```
+
 Response should be `HTTP 200`.
 
 # Getting Available Entities
@@ -193,8 +196,8 @@ Note that the `types` array can be empty, since it won't actually be used.
 It only needs to be present to fulfill the type requirement.
 ```json
 {
-  "acc01": { "name": "Account Name!", "types": [] }
-  "acc02": { "name": "Account Name 2", "types": [] }
+  "acc01": { "name": "Account Name!", "types": [] },
+  "acc02": { "name": "Account Name 2", "types": [] },
   "pos01": { "name": "Position Name!", "types": [], "parent": "acc01" }
   "...": ["etc."]
 }
@@ -202,6 +205,7 @@ It only needs to be present to fulfill the type requirement.
 Response should be `HTTP 200`.
 
 # Create Report (Client ->  Server)
+### Blank Report
 Even a blank report will need a layout-id to be generated.
 
 `POST /api/create`
@@ -215,6 +219,23 @@ Even a blank report will need a layout-id to be generated.
 This endpoint should return a newly generated layout-id for the editor to work on. 
 This should be in an `HTTP 201` response.
 
+### New From Template
+`POST /api/from-template`
+```json
+{
+  "id": "template-id",
+  "entities": [
+    "ACC1",
+    "ACC2",
+  ],
+
+  "range1": "01/16/2002",
+  "range2": "01/17/2002", 
+}
+```
+
+Should return a newly generated layout-id for the editor to work on w/ an `HTTP 201` response.
+
 # Save Report (Client -> Server)
 Since the client cannot modify the available accounts in a report (yet...), only send the visualizations
 with their scaling and location info. Note, for an actual prod use, this needs to be modified to include an auth
@@ -224,6 +245,7 @@ token, or else anyone can overwrite any report by changing the layout field.
 ```json
 {
 "layout": "layout-id",
+"name": "name",
 "visualizations": {
     "ID10": {
       "width": 249,
@@ -234,6 +256,7 @@ token, or else anyone can overwrite any report by changing the layout field.
         "id": "AccID1",
         "type": "Market Value",
         "range": ["01/25", "02/25"],
+        "data-points": 10,
         "chartType": "bar"
       }
     },
@@ -246,6 +269,7 @@ token, or else anyone can overwrite any report by changing the layout field.
         "id": "AccID4",
         "type": "Asset Allocation",
         "range": ["01/25", "02/25"],
+        "data-points": 10,
         "chartType": "pie"
       }
     },
@@ -254,3 +278,4 @@ token, or else anyone can overwrite any report by changing the layout field.
 }
 ```
 Response should be `HTTP 200`.
+
