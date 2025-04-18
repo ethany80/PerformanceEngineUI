@@ -261,7 +261,13 @@ const AddDialog: React.FC<Props> = (props) => {
                         </FormControl>
                         { /* Range selection based on data type */}
                         <LocalizationProvider dateAdapter={AdapterDayjs}>
-                            <DatePicker disabled={selectedType == ""} defaultValue={dayjs()} value={range1} onChange={((e) => {
+                            <DatePicker 
+                            disabled={selectedType == ""} 
+                            defaultValue={dayjs("01-05-2023","MM-DD-YYYY")}
+                            minDate={dayjs("01-05-2023","MM-DD-YYYY")}
+                            maxDate={dayjs("03-22-2025","MM-DD-YYYY")}
+                            value={range1} 
+                            onChange={((e) => {
                                 setRange1(e)
 
                                 if (props.dataTypes[selectedType].range2Enabled && range2) {
@@ -272,7 +278,12 @@ const AddDialog: React.FC<Props> = (props) => {
                             })} />
 
                             { selectedType != "" && props.dataTypes[selectedType].range2Enabled &&
-                                <DatePicker defaultValue={dayjs()} value={range2} onChange={((e) => {
+                                <DatePicker 
+                                defaultValue={dayjs("03-22-2025","MM-DD-YYYY")} 
+                                minDate={dayjs("01-05-2023","MM-DD-YYYY")}
+                                maxDate={dayjs("03-22-2025","MM-DD-YYYY")}
+                                value={range2} 
+                                onChange={((e) => {
                                     setRange2(e)
 
                                     if (range1) {
@@ -292,7 +303,10 @@ const AddDialog: React.FC<Props> = (props) => {
                             onChange={(e: SelectChangeEvent) => {
                                 setGraphType(e.target.value);
                             }}
-                            disabled={!graphTypeEnabled}>
+                            disabled={!(
+                                (selectedType != "" && props.dataTypes[selectedType].range2Enabled && range2 != null && range1 != null) ||
+                                (selectedType != "" && !props.dataTypes[selectedType].range2Enabled && range1 != null)
+                                )}>
                             {allowedGraphTypes.map((type) => (
                                 <MenuItem key={type} value={type}>{type}</MenuItem>
                             ))}
