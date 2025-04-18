@@ -61,6 +61,8 @@ If valid layout-id:
   }
 }
 ```
+Response should be `HTTP 200`.
+
 If the layout-id is invalid, send an `HTTP 400` response.
 
 # Viz Data Request (Client -> Server)
@@ -88,6 +90,7 @@ If the layout-id is invalid, send an `HTTP 400` response.
   "chart-data": { "/* info specified below */": "" }
 }
 ```
+Response should be `HTTP 200`.
 - ## Single bar
   - Axis labels
   - Bar values
@@ -160,7 +163,22 @@ If the layout-id is invalid, send an `HTTP 400` response.
 }
 ```
 
-# Getting all Available Entities
+# Getting Available Templates
+In order to display the templates (other than blank) to create a new report from, and endpoint with no params is needed.
+The return of this can be an empty array if none are available.
+`GET /api/all-templates`
+
+### Server Response
+```json
+[
+  "id1",
+  "id2",
+  "etc..."
+]
+```
+Response should be `HTTP 200`.
+
+# Getting Available Entities
 In order to display the entities to be selected in the creation screen, an endpoint needs to be available
 to retrieve all entities. No params should be needed for this.
 ### Client Request
@@ -180,6 +198,7 @@ It only needs to be present to fulfill the type requirement.
   "...": ["etc."]
 }
 ```
+Response should be `HTTP 200`.
 
 # Create Report (Client ->  Server)
 Even a blank report will need a layout-id to be generated.
@@ -231,3 +250,5 @@ token, or else anyone can overwrite any report by changing the layout field.
     "...": { "etc.": "..." }
   }
 }
+```
+Response should be `HTTP 200`.
