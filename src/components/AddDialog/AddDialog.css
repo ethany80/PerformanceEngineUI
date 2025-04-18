@@ -1,0 +1,14 @@
+.add-selector-list {
+    max-height: 200px;
+    overflow: auto;
+    border-color: gray;
+    border-width: 2px;
+    border-style: solid;
+}
+
+.add-selector-list li {
+    padding-top: 0px;
+    padding-bottom: 0px;
+    margin-top: 0px;
+    margin-bottom: 0px;
+}
