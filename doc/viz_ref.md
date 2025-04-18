@@ -166,6 +166,7 @@ Response should be `HTTP 200`.
 # Getting Available Templates
 In order to display the templates (other than blank) to create a new report from, and endpoint with no params is needed.
 The return of this can be an empty array if none are available.
+
 `GET /api/all-templates`
 
 ### Server Response
@@ -202,6 +203,7 @@ Response should be `HTTP 200`.
 
 # Create Report (Client ->  Server)
 Even a blank report will need a layout-id to be generated.
+
 `POST /api/create`
 ```json
 {
