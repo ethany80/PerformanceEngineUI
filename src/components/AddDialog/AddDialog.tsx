@@ -58,6 +58,9 @@ const AddDialog: React.FC<Props> = (props) => {
     const [range2, setRange2] = useState<Dayjs|null>(null);
     const [graphType, setGraphType] = useState<string>("");
     const [allowedGraphTypes, setAllowedGraphTypes] = useState<string[]>([]);
+    const [numberPoints, setNumberPoints] = useState<number>(3);
+    const [numberPointsStr, setNumberPointsStr] = useState<string>("3");
+    const [numberPointsError, setNumberPointsError] = useState<boolean>(false);
     const [graphTypeEnabled, setGraphTypeEnabled] = useState<boolean>(false);
 
     const [posEntities, setPosEntities] = useState<Record<string, Entity>>({});
@@ -127,6 +130,41 @@ const AddDialog: React.FC<Props> = (props) => {
         setMultiSelectedPositions(tempMultiSelect);
     };
 
+    const isTrueInRecord = (rec: [string, boolean][]): boolean => {
+        for (const [,val] of rec) {
+            if (val) {
+                return  true;
+            }
+        }
+
+        return false;
+    }
+
+    const validateFields = (): boolean => {
+        return (
+            (idType == "ACC" &&
+                isTrueInRecord(Object.entries(multiSelectedAccounts)) &&
+                selectedType != "" &&
+                range1 != null &&
+                (
+                    (props.dataTypes[selectedType].range2Enabled && range2 != null) ||
+                    (!props.dataTypes[selectedType].range2Enabled)
+                ) &&
+                !numberPointsError
+            ) || 
+            (idType == "POS" &&
+                isTrueInRecord(Object.entries(multiSelectedPositions)) &&
+                selectedType != "" &&
+                range1 != null &&
+                (
+                    (props.dataTypes[selectedType].range2Enabled && range2 != null) ||
+                    (!props.dataTypes[selectedType].range2Enabled)
+                ) &&
+                !numberPointsError
+            )
+        );
+    }
+
     const addBtnSubmit = () => {
         const range1Str = range1 ? range1.toString() : "NULL";
         const range2Str = range2 ? range2.toString() : "NULL";
@@ -135,7 +173,6 @@ const AddDialog: React.FC<Props> = (props) => {
             type: selectedType,
             range: [range1Str, range2Str],
             chartType: graphType
-
         }
 
         const newId = newReq.id + props.nextId.toString();
@@ -293,6 +330,24 @@ const AddDialog: React.FC<Props> = (props) => {
                             }
 
                         </LocalizationProvider>
+                        <FormControl>
+                                <TextField
+                                    variant='outlined'
+                                    value={numberPointsStr}
+                                    label={"Number of points"}
+                                    error={numberPointsError}
+                                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                                        const intVal = parseInt(e.target.value);
+                                        if (Number.isNaN(intVal)) {
+                                            setNumberPointsError(true);
+                                        } else {
+                                            setNumberPointsError(false);
+                                            setNumberPoints(intVal);
+                                        }
+
+                                        setNumberPointsStr(e.target.value);
+                                    }} />
+                            </FormControl>
                     </Stack>
                     {/* Chart Type */}
                     <FormControl sx={{ paddingTop: "20" }} fullWidth>
@@ -303,9 +358,19 @@ const AddDialog: React.FC<Props> = (props) => {
                             onChange={(e: SelectChangeEvent) => {
                                 setGraphType(e.target.value);
                             }}
-                            disabled={!(
-                                (selectedType != "" && props.dataTypes[selectedType].range2Enabled && range2 != null && range1 != null) ||
-                                (selectedType != "" && !props.dataTypes[selectedType].range2Enabled && range1 != null)
+                            disabled={
+                                !(
+                                    (
+                                        selectedType != "" && 
+                                        props.dataTypes[selectedType].range2Enabled && range2 != null && 
+                                        range1 != null &&
+                                        !numberPointsError
+                                    ) ||
+                                    (
+                                        selectedType != "" && 
+                                        !props.dataTypes[selectedType].range2Enabled && range1 != null &&
+                                        !numberPointsError
+                                    )
                                 )}>
                             {allowedGraphTypes.map((type) => (
                                 <MenuItem key={type} value={type}>{type}</MenuItem>
@@ -316,7 +381,7 @@ const AddDialog: React.FC<Props> = (props) => {
             </DialogContent>
             <DialogActions>
                 <Button variant='outlined' onClick={closeAddDialog}>Close</Button>
-                <Button variant='contained' onClick={addBtnSubmit}>Add</Button>
+                <Button variant='contained' disabled={!validateFields()} onClick={addBtnSubmit}>Add</Button>
             </DialogActions>
         </Dialog>
     );
