@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 import "./AddDialog.css"
 
@@ -74,8 +74,9 @@ const AddDialog: React.FC<Props> = (props) => {
         }
     })
 
-    // Initialize available accounts/positions only once
-    useEffect(() => {
+    // Initialize available accounts/positions only once.
+    useMemo(() => {
+        console.log('initializing add diag');
         let initAcc: Record<string, boolean> = {};
         let parentsInit: Record<string, boolean> = {};
         let initPosE: Record<string, Entity> = {};
