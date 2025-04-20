@@ -174,9 +174,9 @@ The return of this can be an empty array if none are available.
 ### Server Response
 ```json
 [
-  "template-id-1": "Template Name",
-  "template-id-2": "Template Name 2",
-  "template-id-3": "Template Name 3"
+  { "template-id-1": "Template Name" },
+  { "template-id-2": "Template Name 2" },
+  { "template-id-3": "Template Name 3" }
 ]
 ```
 
