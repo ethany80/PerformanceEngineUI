@@ -51,6 +51,10 @@ export interface GraphRequest {
      */
     range: string[];
     /**
+     * Number of data points to include in the graph.
+     */
+    dataPoints: number;
+    /**
      * Type of chart to use for this graph request.
      */
     chartType: string;

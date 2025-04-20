@@ -46,7 +46,6 @@ type Props = {
 
 const AddDialog: React.FC<Props> = (props) => {
     const [addDialogOpen, setAddDialogOpen] = useState<boolean>(false);
-    const [addDialogId, setAddDialogId] = useState<string>("");
     const [idType, setIdType] = useState<string>("ACC");
     const [parentAccounts, setParentAccounts] = useState<string[]>([]);
     const [multiSelectedAccounts, setMultiSelectedAccounts] = useState<Record<string, boolean>>({});
@@ -110,7 +109,6 @@ const AddDialog: React.FC<Props> = (props) => {
     const resetAddDialog = () => {
         closeAddDialog();
         setIdType("ACC");
-        setAddDialogId("");
         setSelectedType("");
         setRange1(null);
         setRange2(null);
@@ -168,9 +166,44 @@ const AddDialog: React.FC<Props> = (props) => {
     const addBtnSubmit = () => {
         const range1Str = range1 ? range1.toString() : "NULL";
         const range2Str = range2 ? range2.toString() : "NULL";
+        let combinedId: string = "";
+        if (idType == "ACC") {
+            const intermediary = Object.entries(multiSelectedAccounts).flatMap(([acc, val]) => {
+                if (val) {
+                    return [acc];
+                } else {
+                    return [];
+                }
+            })
+
+            for (const str of intermediary) {
+                combinedId = combinedId + str + ",";
+            }
+            // Remove trailing comma
+            combinedId = combinedId.slice(0, combinedId.length - 1);
+        } else if (idType == "POS") {
+            const intermediary = Object.entries(multiSelectedPositions).flatMap(([pos, val]) => {
+                if (val) {
+                    return [pos];
+                } else {
+                    return [];
+                }
+            })
+
+            for (const str of intermediary) {
+                combinedId = combinedId + str + ",";
+            }
+            // Remove trailing comma
+            combinedId = combinedId.slice(0, combinedId.length - 1);
+        } else {
+            console.error("Attempted to create Graph Request with invalid id type...", idType);
+            return;
+        }
+
         const newReq: GraphRequest = {
-            id: addDialogId,
+            id: combinedId,
             type: selectedType,
+            dataPoints: numberPoints,
             range: [range1Str, range2Str],
             chartType: graphType
         }
