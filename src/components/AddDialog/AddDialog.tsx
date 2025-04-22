@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import "./AddDialog.css"
 
@@ -63,7 +63,7 @@ const AddDialog: React.FC<Props> = (props) => {
     const [graphTypeEnabled, setGraphTypeEnabled] = useState<boolean>(false);
 
     const [posEntities, setPosEntities] = useState<Record<string, Entity>>({});
-    const [accEntities, setAccEntities] = useState<Record<string, Entity>>({});
+    const [accEntities, setAccEntities] = useState<Record<string, Entity>>({});    
 
     const [prefixedDataTypes, setPrefixedDataTypes] = useState<Record<string,string[]>>({});
 
@@ -74,8 +74,8 @@ const AddDialog: React.FC<Props> = (props) => {
         }
     })
 
-    // Initialize available accounts/positions only once.
-    useMemo(() => {
+    // Initialize available accounts/positions only once
+    useEffect(() => {
         let initAcc: Record<string, boolean> = {};
         let parentsInit: Record<string, boolean> = {};
         let initPosE: Record<string, Entity> = {};
