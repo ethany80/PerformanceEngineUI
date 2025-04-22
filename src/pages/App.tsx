@@ -165,9 +165,6 @@ const App: React.FC = () => {
                 <Button variant='contained' onClick={loadBtnClick} endIcon={<Download />}>Load Data</Button>
                 <Button variant='contained' onClick={deleteBtn}>Delete</Button>
                 <Button variant='contained' onClick={window.print} endIcon={<Print />}>Print</Button>
-                <IconButton aria-label="delete" size="large">
-                    <Reviews fontSize="inherit" />
-                </IconButton>
             </Stack>
             <div id='grid-editor'>
                 <GridEditor
