@@ -50,15 +50,18 @@ const Landing: React.FC = () => {
         console.log('Creating:', name, 'with', entities);
         // `/api/create`
         // `random-id`
-
         const req: FromBlankRequest = {
             name: name,
-            entities: entities
+            entities: entities,
         }
+
+        const headers = new Headers();
+        headers.append("Content-Type", "application/json")
 
         const url = new Request(`${ENDPOINT_URL}/from-blank`, {
             method: 'POST',
-            body: req.toString()
+            body: JSON.stringify(req),
+            headers: headers
         });
         fetch(url)
         .then((resp) => {
@@ -82,9 +85,14 @@ const Landing: React.FC = () => {
             range2: range2.format("MM/DD/YYYY")
         }
 
+        const headers = new Headers();
+        headers.append("Content-Type", "application/json")
+
         const url = new Request(`${ENDPOINT_URL}/from-ai`, {
             method: 'POST',
-            body: req.toString()
+            body: JSON.stringify(req),
+            headers: headers
+            
         });
         fetch(url)
         .then((resp) => {

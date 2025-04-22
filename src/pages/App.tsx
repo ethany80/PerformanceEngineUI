@@ -5,14 +5,15 @@ import "./App.css";
 import GridEditor from "../components/GridEditor/GridEditor";
 import AddDialog from "../components/AddDialog/AddDialog";
 
-import { BAR_CHART, LINE_CHART, MOCK_BAR_GRAPH_REQUEST_RETURN, MOCK_LINE_GRAPH_REQUEST_RETURN, MOCK_MULTI_BAR_GRAPH_REQUEST_RETURN, MOCK_MULTI_LINE_GRAPH_REQUEST_RETURN, MOCK_PIE_GRAPH_REQUEST_RETURN, MOCK_TABLE_REQUEST_RETURN, MOCK_TITLE, MULTI_BAR_CHART, MULTI_LINE_CHART, PIE_CHART, TABLE_CHART } from '../types/Constants';
-import { DataType, Entity, GraphRequest } from '../types/BackendInterfaces';
+import { BAR_CHART, ENDPOINT_URL, LINE_CHART, MOCK_BAR_GRAPH_REQUEST_RETURN, MOCK_LINE_GRAPH_REQUEST_RETURN, MOCK_MULTI_BAR_GRAPH_REQUEST_RETURN, MOCK_MULTI_LINE_GRAPH_REQUEST_RETURN, MOCK_PIE_GRAPH_REQUEST_RETURN, MOCK_TABLE_REQUEST_RETURN, MOCK_TITLE, MULTI_BAR_CHART, MULTI_LINE_CHART, PIE_CHART, TABLE_CHART } from '../types/Constants';
+import { DataType, DocRequest, Entity, GraphRequest } from '../types/BackendInterfaces';
 import { VizDataProps } from '../types/DisplayInterfaces';
 
-import { Button, IconButton, Stack } from '@mui/material';
+import { Button, CircularProgress, IconButton, Stack } from '@mui/material';
 import { Add, Download, Print, Reviews } from '@mui/icons-material';
 
 interface DocumentObject {
+    name: string;
     entities: Record<string, Entity>;
     dataTypes: Record<string, DataType>;
     visualizations: Record<string, VizDataProps>;
@@ -23,54 +24,58 @@ const App: React.FC = () => {
     const { documentId } = useParams();
     const [visualizations, setVisualizations] = useState<Record<string, VizDataProps>>({});
     const [nextId, setNextId] = useState<number>(0);
+    const [loading, setLoading] = useState<boolean>(true);
     const [selectedId, setSelectedId] = useState<string|undefined>(undefined);
     const [requestAdd, setRequestAdd] = useState<boolean|undefined>(undefined);
     const [entities, setEntities] = useState<Record<string, Entity>>({});
     const [dataTypes, setDataTypes] = useState<Record<string, DataType>>({});
     const [title, setTitle] = useState<string>("Blank Report");
 
-    const getDocument = (documentId: string): DocumentObject => {
-        console.log('getting doc');
-        setTitle(documentId);
-        // TODO replace with request once API endpoints are set up.
-        const doc: DocumentObject = {
-            entities: {
-                "acc01": { name: "Account 1", types: ["Return", "Market Value", "Allocation"], parent: undefined },
-                "acc02": { name: "Account 2", types: ["Return", "Market Value", "Allocation"], parent: undefined },
-                "acc04": { name: "Account 4", types: ["Return", "Market Value", "Allocation"], parent: undefined },
-                "acc05": { name: "Account 5", types: ["Return", "Market Value", "Allocation"], parent: undefined },
-                "acc06": { name: "Account 6", types: ["Return", "Market Value", "Allocation"], parent: undefined },
-                "acc07": { name: "Account 7", types: ["Return", "Market Value", "Allocation"], parent: undefined },
-                "acc08": { name: "Account 8", types: ["Return", "Market Value", "Allocation"], parent: undefined },
-                "acc09": { name: "Account 9", types: ["Return", "Market Value", "Allocation"], parent: undefined },
-                "pos01": { name: "Position 1", types: ["Market Value", "Return"], parent: "acc01" },
-                "pos02": { name: "Position 2", types: ["Market Value", "Return"], parent: "acc01" },
-                "pos03": { name: "Position 3", types: ["Market Value", "Return"], parent: "acc02"}
-            },
-            dataTypes: {
-                "Market Value": { types: ["line", "multi-line", "bar", "table"], range2Enabled: true, canBeMultiple: true },
-                "Return": { types: ["line", "multi-line", "bar", "table"], range2Enabled: true, canBeMultiple: true },
-                "Allocation": { types: ["pie", "table"], range2Enabled: false, canBeMultiple: false }
-            },
-            visualizations: {}
-        }
+    const getDocument = (documentId: string, callback: (obj: DocumentObject) => void) => {
+        // api/doc
+        const headers = new Headers();
+        headers.append("Content-Type", "application/json")
 
-        return doc;
+        const url = new Request(`${ENDPOINT_URL}/doc?layout=${documentId}`, {
+            method: 'GET',
+            headers: headers
+        });
+        
+        fetch(url)
+        .then((resp) => {
+            console.log('got resp', resp)
+            if (resp.status == 200) {
+                resp.json().then((j) => {
+                    // TODO verify this JSON object *actually* matches the interface.
+                    // This will simply assume the object is correct.
+                    console.log(j);
+                    callback(j as DocumentObject);
+                })
+            }
+        })
     }
 
     const onLoad = (doc: DocumentObject) => {
+        console.log("Setting stuff to doc:", doc);
+        setTitle(doc.name);
+        console.log("Name:", doc.name);
         setEntities(doc.entities);
+        console.log("Ent:", doc.entities);
         setDataTypes(doc.dataTypes);
+        console.log("Types:", doc.dataTypes);
         setVisualizations(doc.visualizations);
+        console.log("Viz:", doc.visualizations);
+        setLoading(false);
     };
 
     // Init app state from request before render.
-    useMemo(() => {
+    useEffect(() => {
         // Initialize documents
         if (documentId) {
             setTitle(documentId);
-            const doc = getDocument(documentId);
-            onLoad(doc);
+            getDocument(documentId, (obj) => {
+                onLoad(obj);
+            });
         }
     }, [])
 
@@ -138,14 +143,16 @@ const App: React.FC = () => {
     };
 
     return (
-        <div className="App">
+        <span>
+        <CircularProgress id='app-loading' sx={{visibility: loading ? 'visible' : 'hidden'}} />
+        <div className={"App " + (loading ? " loading-fade" : "")} >
             <AddDialog 
                 nextId={nextId}
                 entities={entities}
                 dataTypes={dataTypes}
                 requested_open={requestAdd}
                 set_requested_open={setRequestAdd}
-                add_visualization={addVisualization} />
+                add_visualization={addVisualization}/>
             <h1 className='hidden-on-print'>{title}</h1>
             <Stack
                 direction={"row"}
@@ -172,6 +179,7 @@ const App: React.FC = () => {
                     />
             </div>
         </div>
+        </span>
     );
 };
 

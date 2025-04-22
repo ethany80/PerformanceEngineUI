@@ -52,6 +52,7 @@ const GridEditor: React.FC<Props> = (props) => {
             }}
             onClickCapture={() => { props.set_selected(undefined); }}
             >
+                { props.charts != undefined &&
                 <div style={{position: "relative", left: "1px", top: "1px", width: GRID_WIDTH - 1, height: GRID_HEIGHT - 1}}>
             {/* Draggable Charts */}
             {Object.entries(props.charts).map(([id, chart]) => (
@@ -78,6 +79,7 @@ const GridEditor: React.FC<Props> = (props) => {
                 </Draggable>
             ))}
             </div>
+            }
         </div>
     );
 };

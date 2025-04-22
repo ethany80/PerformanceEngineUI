@@ -51,6 +51,7 @@ const AddDialog: React.FC<Props> = (props) => {
     const [multiSelectedAccounts, setMultiSelectedAccounts] = useState<Record<string, boolean>>({});
     const [multiSelectedPositions, setMultiSelectedPositions] = useState<Record<string, boolean>>({});
     const [radioSelectedAccount, setRadioSelectedAccount] = useState<string>("");
+    const [positionsEnabled, setPositionsEnabled] = useState<boolean>(false);
     const [availableTypes, setAvailableTypes] = useState<string[]>([]);
     const [selectedType, setSelectedType] = useState<string>("");
     const [range1, setRange1] = useState<Dayjs|null>(null);
@@ -81,12 +82,19 @@ const AddDialog: React.FC<Props> = (props) => {
         let initPosE: Record<string, Entity> = {};
         let initAccE: Record<string, Entity> = {};
         let initPrefixes: Record<string, string[]> = {};
+
+        if (props.entities == undefined) {
+            return;
+        }
+
+        let posPresent = false;
         for (const [key, val] of Object.entries(props.entities)) {
             const entityIdent = key.slice(0, 3).toUpperCase();
             if (entityIdent == "ACC") {
                 initAccE[key] = val;
                 initAcc[key] = false;
             } else if (entityIdent == "POS") {
+                posPresent = true;
                 initPosE[key] = val;
                 if (val.parent) {
                     parentsInit[val.parent] = true;
@@ -97,14 +105,17 @@ const AddDialog: React.FC<Props> = (props) => {
             // /this assignment is faster than checking each time.
             initPrefixes[entityIdent] = val.types;
         }
+
+        console.log("pos", posPresent);
     
+        setPositionsEnabled(posPresent);
         setParentAccounts(Object.entries(parentsInit).map(([k]) => ( k )));
         setPrefixedDataTypes(initPrefixes);
         setAvailableTypes(initPrefixes[idType]);
         setMultiSelectedAccounts(initAcc);
         setPosEntities(initPosE);
         setAccEntities(initAccE);
-    }, [])
+    }, [props.entities])
 
     const resetAddDialog = () => {
         closeAddDialog();
@@ -233,6 +244,8 @@ const AddDialog: React.FC<Props> = (props) => {
             onClose={closeAddDialog}
             fullWidth
             maxWidth={'md'}>
+                {props.entities !== undefined && availableTypes != undefined &&
+                <span>
             <DialogTitle>Add Chart</DialogTitle>
             <IconButton aria-label='close' onClick={closeAddDialog} sx={(_) => ({ position: 'absolute', right: 8, top: 8 })}>
                 <Close />
@@ -244,7 +257,7 @@ const AddDialog: React.FC<Props> = (props) => {
                     setAvailableTypes(prefixedDataTypes[e.target.value])
                 }} >
                     <FormControlLabel value="ACC" control={<Radio />} label="Account" />
-                    <FormControlLabel value="POS" control={<Radio />} label="Position" />
+                    <FormControlLabel value="POS" control={<Radio disabled={!positionsEnabled} />} label="Position" />
                 </RadioGroup>
                 <DialogContentText>Select the target account(s)/position(s)</DialogContentText>
                         {(idType == "ACC") ? 
@@ -416,6 +429,8 @@ const AddDialog: React.FC<Props> = (props) => {
                 <Button variant='outlined' onClick={closeAddDialog}>Close</Button>
                 <Button variant='contained' disabled={!validateFields()} onClick={addBtnSubmit}>Add</Button>
             </DialogActions>
+        </span>
+        }
         </Dialog>
     );
 };

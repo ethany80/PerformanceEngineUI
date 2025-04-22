@@ -3,6 +3,11 @@
     justify-items: center;
 }
 
+.loading-fade {
+    opacity: 50%;
+    pointer-events: none;
+}
+
 html, body {
     background-image: linear-gradient(30deg, rgb(97, 205, 255) 0%, #c1ccff 44%, rgba(0, 212, 255, 1) 100%);
     background-position: 100% 100%;
@@ -35,4 +40,11 @@ html, body {
     #grid-editor {
         margin-top: 0px !important;
     }
+}
+
+#app-loading {
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    z-index: 1000;
 }

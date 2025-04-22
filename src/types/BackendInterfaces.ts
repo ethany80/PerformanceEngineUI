@@ -172,3 +172,7 @@ export interface FromBlankRequest {
     name: string;
     entities: string[];
 }
+
+export interface DocRequest {
+    layout: string
+}
