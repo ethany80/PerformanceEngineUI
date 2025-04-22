@@ -13,3 +13,9 @@
     border-radius: 0;
     position: absolute;
 }
+
+.selected-viz {
+    border: dotted;
+    border-width: 2px;
+    border-color: red;
+  }

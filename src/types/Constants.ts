@@ -1,6 +1,6 @@
 // GridEditor
 
-import { GraphRequest, GraphRequestReturn } from "./BackendInterfaces";
+import { GraphRequest, GraphRequestReturn, SingleBarRequestReturn } from "./BackendInterfaces";
 
 /** Size of each grid cell. */
 export const CELL_SIZE = 25;
@@ -32,21 +32,39 @@ export const MOCK_PIE_GRAPH_REQUEST: GraphRequest = {
 };
 
 export const MOCK_BAR_GRAPH_REQUEST_RETURN: GraphRequestReturn = {
-    axes: ["1/1", "2/1", "3/1"],
-    data: [14, 3, 5],
-    supportedTypes: [BAR_CHART]
+    title: "Bar",
+    type: BAR_CHART,
+    chartData: {
+        xAxis: ["1/1", "2/1", "3/1"],
+        values: [14, 3, 5]
+    }
 }
 
 export const MOCK_PIE_GRAPH_REQUEST_RETURN: GraphRequestReturn = {
-    axes: ["AAPL", "AMZN", "NVDA"],
-    data: [60, 10, 30],
-    supportedTypes: [PIE_CHART]
+    title: "Pie",
+    type: PIE_CHART,
+    chartData: {
+        slices: [
+            { name: "AAPL", value: 60 },
+            { name: "AMZN", value: 10 },
+            { name: "NVDA", value: 30 },
+        ]
+    }
 }
 
 export const MOCK_LINE_GRAPH_REQUEST_RETURN: GraphRequestReturn = {
-    axes: [],
-    data: [[1, 2, 3, 5, 8, 10], [8, 5.5, 26, 8.5, 5.5, 6]],
-    supportedTypes: [LINE_CHART]
+    title: "Line",
+    type: LINE_CHART,
+    chartData: {
+        points: [
+            {x: 1, y: 8},
+            {x: 2, y: 5.5},
+            {x: 3, y: 26},
+            {x: 5, y: 8.5},
+            {x: 8, y: 5.5},
+            {x: 10, y: 6},
+        ],
+    }
 }
 
 export const MOCK_TITLE: string = "Loaded Report Title"

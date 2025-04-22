@@ -46,7 +46,7 @@ const GridEditor: React.FC<Props> = (props) => {
     return (
         <div id="grid"
             style={{
-                width: GRID_WIDTH,
+                width: GRID_WIDTH + 3,
                 height: GRID_HEIGHT,
                 backgroundSize: `${CELL_SIZE}px ${CELL_SIZE}px`,
             }}
