@@ -208,10 +208,9 @@ Response should be `HTTP 200`.
 ### Blank Report
 Even a blank report will need a layout-id to be generated.
 
-`POST /api/create`
+`POST /api/from-blank`
 ```json
 {
-  "base-layout": "layout-id OR 'blank'",
   "name": "Initial Report Name",
   "entities": ["acc01", "pos01", "etc..."]
 }
@@ -233,49 +232,20 @@ This should be in an `HTTP 201` response.
   "range2": "01/17/2002", 
 }
 ```
-
-Should return a newly generated layout-id for the editor to work on w/ an `HTTP 201` response.
-
-# Save Report (Client -> Server)
-Since the client cannot modify the available accounts in a report (yet...), only send the visualizations
-with their scaling and location info. Note, for an actual prod use, this needs to be modified to include an auth
-token, or else anyone can overwrite any report by changing the layout field.
-
-`POST /api/save`
+### New From AI
+`POST /api/from-ai`
 ```json
 {
-"layout": "layout-id",
-"name": "name",
-"visualizations": {
-    "ID10": {
-      "width": 249,
-      "height": 249,
-      "x": 125,
-      "y": 25,
-      "req": {
-        "id": "AccID1",
-        "type": "Market Value",
-        "range": ["01/25", "02/25"],
-        "data-points": 10,
-        "chartType": "bar"
-      }
-    },
-    "ID41": {
-      "width": 249,
-      "height": 249,
-      "x": 425,
-      "y": 325,
-      "req": {
-        "id": "AccID4",
-        "type": "Asset Allocation",
-        "range": ["01/25", "02/25"],
-        "data-points": 10,
-        "chartType": "pie"
-      }
-    },
-    "...": { "etc.": "..." }
-  }
+  "prompt": "Can you make a report with these entities in this range? :)",
+  "entities": [
+    "ACC1",
+    "ACC2",
+  ],
+
+  "range1": "01/16/2002",
+  "range2": "01/17/2002", 
 }
 ```
-Response should be `HTTP 200`.
 
+
+Should return a newly generated layout-id for the editor to work on w/ an `HTTP 201` response.
