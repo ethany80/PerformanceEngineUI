@@ -161,15 +161,23 @@ const Visualization: React.FC<Props> = (props) => {
                 </TableRow>
             </TableHead>
             <TableBody>
-                {rows.map((row) => (
-                    <TableRow>
-                        {row.map((val, idx) => (
-                            idx == 0 ?
-                            <TableCell component="th" scope="row">{val}</TableCell>
-                            :
-                            <TableCell>{val}</TableCell>
-                        ))}
-                    </TableRow>
+                {rows.map((row, idx) => (
+                    (idx == rows.length - 1 && data.seperateBottom === true) ?
+                        <TableRow>
+                            {row.map((val) => (
+                                <TableCell className="final-table-row-item">{val}</TableCell>
+                            ))}
+                        </TableRow>
+                    :
+
+                        <TableRow>
+                            {row.map((val, rowIdx) => (
+                                rowIdx == 0 ?
+                                <TableCell component="th" scope="row">{val}</TableCell>
+                                :
+                                <TableCell>{val}</TableCell>
+                            ))}
+                        </TableRow>
                 )) }
             </TableBody>
             </Table>)

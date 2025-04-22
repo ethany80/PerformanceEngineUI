@@ -19,6 +19,7 @@ export const TABLE_CHART = 'table';
 
 export const MOCK_BAR_GRAPH_REQUEST: GraphRequest = {
     id: 'bargraph',
+    dataPoints: 3,
     type: 'returns',
     range: ['00', '01'],
     chartType: BAR_CHART
@@ -27,6 +28,7 @@ export const MOCK_BAR_GRAPH_REQUEST: GraphRequest = {
 export const MOCK_PIE_GRAPH_REQUEST: GraphRequest = {
     id: 'piegraph',
     type: 'allocation',
+    dataPoints: 3,
     range: ['00', '01'],
     chartType: PIE_CHART
 };
@@ -112,6 +114,7 @@ export const MOCK_TABLE_REQUEST_RETURN: GraphRequestReturn = {
         cols: 3,
         headers: ["Col 1", "Col 2", "Col 3"],
         dataType: "number",
+        seperateBottom: true,
         data: [1, 2, 3, 4, 5, 6, 7, 8, 9]
     }
 }
