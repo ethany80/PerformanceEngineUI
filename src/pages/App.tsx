@@ -6,7 +6,7 @@ import GridEditor from "../components/GridEditor/GridEditor";
 import AddDialog from "../components/AddDialog/AddDialog";
 
 import { BAR_CHART, ENDPOINT_URL, LINE_CHART, MOCK_BAR_GRAPH_REQUEST_RETURN, MOCK_LINE_GRAPH_REQUEST_RETURN, MOCK_MULTI_BAR_GRAPH_REQUEST_RETURN, MOCK_MULTI_LINE_GRAPH_REQUEST_RETURN, MOCK_PIE_GRAPH_REQUEST_RETURN, MOCK_TABLE_REQUEST_RETURN, MOCK_TITLE, MULTI_BAR_CHART, MULTI_LINE_CHART, PIE_CHART, TABLE_CHART } from '../types/Constants';
-import { DataType, DocRequest, Entity, GraphRequest } from '../types/BackendInterfaces';
+import { DataType, DocRequest, Entity, GraphRequest, GraphRequestReturn } from '../types/BackendInterfaces';
 import { VizDataProps } from '../types/DisplayInterfaces';
 
 import { Button, CircularProgress, IconButton, Stack } from '@mui/material';
@@ -80,11 +80,14 @@ const App: React.FC = () => {
     }, [])
 
     const loadBtnClick = (): void => {
-        const updatedVisualizations = {...visualizations};
-        for (const [, viz] of Object.entries(updatedVisualizations)) {
-            viz.ret = requestData(viz.req);
+        const existingViz =  {...visualizations}
+        for (const [key,] of Object.entries(existingViz)) {
+            const updatedVisualizations = {...visualizations};
+            requestData(updatedVisualizations[key].req, (ret) => {
+                updatedVisualizations[key].ret = ret;
+                setVisualizations(updatedVisualizations);
+            });
         }
-        setVisualizations(updatedVisualizations);
     };
 
     const addBtnClick = (): void => {
@@ -100,22 +103,25 @@ const App: React.FC = () => {
         setNextId(nextId + 1);
     };
 
-    const requestData = (req: GraphRequest) => {
+    const requestData = (req: GraphRequest, callback: (ret: GraphRequestReturn|undefined) => void) => {
+        let ret: GraphRequestReturn|undefined;
         if (req.chartType == BAR_CHART) {
-            return MOCK_BAR_GRAPH_REQUEST_RETURN;
+            ret = MOCK_BAR_GRAPH_REQUEST_RETURN;
         } else if (req.chartType == MULTI_BAR_CHART) {
-            return MOCK_MULTI_BAR_GRAPH_REQUEST_RETURN;
+            ret = MOCK_MULTI_BAR_GRAPH_REQUEST_RETURN;
         } else if (req.chartType == PIE_CHART) {
-            return MOCK_PIE_GRAPH_REQUEST_RETURN;
+            ret = MOCK_PIE_GRAPH_REQUEST_RETURN;
         } else if (req.chartType == LINE_CHART) {
-            return MOCK_LINE_GRAPH_REQUEST_RETURN;
+            ret = MOCK_LINE_GRAPH_REQUEST_RETURN;
         } else if  (req.chartType == MULTI_LINE_CHART) {
-            return MOCK_MULTI_LINE_GRAPH_REQUEST_RETURN;
+            ret = MOCK_MULTI_LINE_GRAPH_REQUEST_RETURN;
         } else if (req.chartType == TABLE_CHART) {
-            return MOCK_TABLE_REQUEST_RETURN;            
+            ret = MOCK_TABLE_REQUEST_RETURN;            
+        } else {
+            ret = undefined;
         }
 
-        return undefined;
+        callback(ret);
     };
 
     const updateCoords = (id: string, x: number, y: number) => {
