@@ -1,15 +1,37 @@
 /**
- * Interface containing information for a given account ID retrieved from the backend.
+ * Interface containing information for a given entity ID retrieved from the backend.
  */
-export interface DocumentInfo {
+export interface Entity {
     /**
-     * Identifier for account ID.
+     * Name for a given entity.
      */
-    id: string;
+    name: string;
     /**
      * Available visualization types for the given ID.
      */
-    availableTypes: string[];
+    types: string[];
+    /**
+     * Name of the entity's parent entity.
+     */
+    parent: string|undefined;
+}
+
+/**
+ * Interface containing data about the available data types and what they can be used for.
+ */
+export interface DataType {
+    /**
+     * Supported graph types for this data type.
+     */
+    types: string[];
+    /**
+     * Whether this data type will have a secondary range selector.
+     */    
+    range2Enabled: boolean;
+    /**
+     * Whether this data type supports multi-selected IDs (either positions or accounts).
+     */
+    canBeMultiple: boolean;
 }
 
 /**
@@ -28,6 +50,10 @@ export interface GraphRequest {
      * These will be filtered in the backend.
      */
     range: string[];
+    /**
+     * Number of data points to include in the graph.
+     */
+    dataPoints: number;
     /**
      * Type of chart to use for this graph request.
      */
@@ -104,6 +130,8 @@ export interface TableRequestReturn {
     headers: string[];
     /** Data type of each cell (valid values: 'string', 'number'). */
     dataType: string;
+    /** Whether to separate the bottom row in styling. */
+    seperateBottom: boolean;
     /** Flattened row-major array of table values. */
     data: string[]|number[];
 }

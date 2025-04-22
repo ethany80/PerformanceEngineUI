@@ -18,13 +18,20 @@ When generating a new report, backend clones the preset and gives the client the
 }
 ```
 ## Server Response:
+If valid layout-id:
 ```json
 {
-  "accounts": {
-    "id1": ["bar", "line"],
-    "id2": ["pie"],
+  "entities": {
+    "acc01": { "name": "Account Name!", "types": ["Return", "Market Value", "Allocation"] }
+    "acc02": { "name": "Account Name 2", "types": ["Return", "Market Value", "Allocation"] }
+    "pos01": { "name": "Position Name!", "types": ["Market Value", "Return"], "parent": "acc01" }
     "...": ["etc."]
   },
+  "data-types": [
+    "Market Value": { "types": ["line", "multi-line", "bar", "table"], "range2-enabled": true, "can-be-multiple": true },
+    "Return": { "types": ["line", "multi-line", "bar", "table"], "range2-enabled": true, "can-be-multiple": true },
+    "Allocation": { "types": ["pie", "table"], "range2-enabled": false, "can-be-multiple": false }
+  ],
   "visualizations": {
     "ID10": {
       "width": 249,
@@ -35,6 +42,7 @@ When generating a new report, backend clones the preset and gives the client the
         "id": "AccID1",
         "type": "Market Value",
         "range": ["01/25", "02/25"],
+        "data-points": 10,
         "chartType": "bar"
       }
     },
@@ -47,6 +55,7 @@ When generating a new report, backend clones the preset and gives the client the
         "id": "AccID4",
         "type": "Asset Allocation",
         "range": ["01/25", "02/25"],
+        "data-points": 10,
         "chartType": "pie"
       }
     },
@@ -54,6 +63,9 @@ When generating a new report, backend clones the preset and gives the client the
   }
 }
 ```
+Response should be `HTTP 200`.
+
+If the layout-id is invalid, send an `HTTP 400` response.
 
 # Viz Data Request (Client -> Server)
 `GET /api/graph`
@@ -62,6 +74,7 @@ When generating a new report, backend clones the preset and gives the client the
   "id": "AccID4",
   "type": "Asset Allocation",
   "range": ["01/25", "02/25"],
+  "data-points": 10,
   "chartType": "pie"
 }
 ```
@@ -70,6 +83,7 @@ When generating a new report, backend clones the preset and gives the client the
 - ## General / All
   - Chart title
   - Chart type
+  - Number of data points
   - Chart-Specific data
 ```json
 {
@@ -78,6 +92,7 @@ When generating a new report, backend clones the preset and gives the client the
   "chart-data": { "/* info specified below */": "" }
 }
 ```
+Response should be `HTTP 200`.
 - ## Single bar
   - Axis labels
   - Bar values
@@ -145,17 +160,92 @@ When generating a new report, backend clones the preset and gives the client the
 {
   "cols": 2,
   "headers": ["header1", "header2"],
+  "separate-bottom": true,
   "datapoints": [1,2,3,4,5,6,7, "..."]
 }
 ```
 
+# Getting Available Templates
+In order to display the templates (other than blank) to create a new report from, and endpoint with no params is needed.
+The return of this can be an empty array if none are available.
+
+`GET /api/all-templates`
+
+### Server Response
+```json
+[
+  { "template-id-1": "Template Name" },
+  { "template-id-2": "Template Name 2" },
+  { "template-id-3": "Template Name 3" }
+]
+```
+
+Response should be `HTTP 200`.
+
+# Getting Available Entities
+In order to display the entities to be selected in the creation screen, an endpoint needs to be available
+to retrieve all entities. No params should be needed for this.
+### Client Request
+`GET /api/all-entities`
+
+No params should be needed for this.
+### Server Response
+Since this is almost the same use-case as the entities object of a 
+document request return, just use the same types.
+Note that the `types` array can be empty, since it won't actually be used.
+It only needs to be present to fulfill the type requirement.
+```json
+{
+  "acc01": { "name": "Account Name!", "types": [] },
+  "acc02": { "name": "Account Name 2", "types": [] },
+  "pos01": { "name": "Position Name!", "types": [], "parent": "acc01" }
+  "...": ["etc."]
+}
+```
+Response should be `HTTP 200`.
+
+# Create Report (Client ->  Server)
+### Blank Report
+Even a blank report will need a layout-id to be generated.
+
+`POST /api/create`
+```json
+{
+  "base-layout": "layout-id OR 'blank'",
+  "name": "Initial Report Name",
+  "entities": ["acc01", "pos01", "etc..."]
+}
+```
+This endpoint should return a newly generated layout-id for the editor to work on. 
+This should be in an `HTTP 201` response.
+
+### New From Template
+`POST /api/from-template`
+```json
+{
+  "id": "template-id",
+  "entities": [
+    "ACC1",
+    "ACC2",
+  ],
+
+  "range1": "01/16/2002",
+  "range2": "01/17/2002", 
+}
+```
+
+Should return a newly generated layout-id for the editor to work on w/ an `HTTP 201` response.
+
 # Save Report (Client -> Server)
 Since the client cannot modify the available accounts in a report (yet...), only send the visualizations
-with their scaling and location info.
+with their scaling and location info. Note, for an actual prod use, this needs to be modified to include an auth
+token, or else anyone can overwrite any report by changing the layout field.
 
 `POST /api/save`
 ```json
 {
+"layout": "layout-id",
+"name": "name",
 "visualizations": {
     "ID10": {
       "width": 249,
@@ -166,6 +256,7 @@ with their scaling and location info.
         "id": "AccID1",
         "type": "Market Value",
         "range": ["01/25", "02/25"],
+        "data-points": 10,
         "chartType": "bar"
       }
     },
@@ -178,9 +269,13 @@ with their scaling and location info.
         "id": "AccID4",
         "type": "Asset Allocation",
         "range": ["01/25", "02/25"],
+        "data-points": 10,
         "chartType": "pie"
       }
     },
     "...": { "etc.": "..." }
   }
 }
+```
+Response should be `HTTP 200`.
+

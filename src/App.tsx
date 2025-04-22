@@ -1,15 +1,21 @@
 import { useState } from 'react';
 
-import "./App.css";
-import GridEditor from "./components/GridEditor/GridEditor";
-import AddDialog from "./components/AddDialog";
 
-import { BAR_CHART, LINE_CHART, MOCK_BAR_GRAPH_REQUEST_RETURN, MOCK_LINE_GRAPH_REQUEST_RETURN, MOCK_MULTI_BAR_GRAPH_REQUEST_RETURN, MOCK_MULTI_LINE_GRAPH_REQUEST_RETURN, MOCK_PIE_GRAPH_REQUEST_RETURN, MOCK_TABLE_REQUEST_RETURN, MOCK_TITLE, MULTI_BAR_CHART, MULTI_LINE_CHART, PIE_CHART, TABLE_CHART } from './types/Constants';
-import { DocumentInfo, GraphRequest } from './types/BackendInterfaces';
+import GridEditor from "./components/GridEditor/GridEditor";
+import AddDialog from "./components/AddDialog/AddDialog";
+
+import { BAR_CHART, LINE_CHART, MOCK_BAR_GRAPH_REQUEST_RETURN, MOCK_LINE_GRAPH_REQUEST_RETURN, MOCK_PIE_GRAPH_REQUEST_RETURN, MOCK_TITLE, PIE_CHART } from './types/Constants';
+import { DataType, Entity, GraphRequest } from './types/BackendInterfaces';
 import { VizDataProps } from './types/DisplayInterfaces';
 
 import { Button, IconButton, Stack } from '@mui/material';
 import { Add, Download, Print, Reviews } from '@mui/icons-material';
+
+interface DocumentObject {
+    entities: Record<string, Entity>;
+    dataTypes: Record<string, DataType>;
+    visualizations: Record<string, VizDataProps>;
+}
 
 const App: React.FC = () => {
     // State for application and children
@@ -17,13 +23,31 @@ const App: React.FC = () => {
     const [nextId, setNextId] = useState<number>(0);
     const [selectedId, setSelectedId] = useState<string|undefined>(undefined);
     const [requestAdd, setRequestAdd] = useState<boolean|undefined>(undefined);
-    const [ids, setIds] = useState<Record<string, DocumentInfo>>({
-        "ID1": { id: "ID1", availableTypes: ["Market Value", "Return"] },
-        "ID2": { id: "ID2", availableTypes: ["Market Value", "Return"] },
-        "ID3": { id: "ID3", availableTypes: ["Market Value", "Return"] },
-        "ID4": { id: "ID4", availableTypes: ["Asset Allocation"] }
+    const [entities, setEntities] = useState<Record<string, Entity>>({
+        "acc01": { name: "Account 1", types: ["Return", "Market Value", "Allocation"], parent: undefined },
+        "acc02": { name: "Account 2", types: ["Return", "Market Value", "Allocation"], parent: undefined },
+        "acc04": { name: "Account 4", types: ["Return", "Market Value", "Allocation"], parent: undefined },
+        "acc05": { name: "Account 5", types: ["Return", "Market Value", "Allocation"], parent: undefined },
+        "acc06": { name: "Account 6", types: ["Return", "Market Value", "Allocation"], parent: undefined },
+        "acc07": { name: "Account 7", types: ["Return", "Market Value", "Allocation"], parent: undefined },
+        "acc08": { name: "Account 8", types: ["Return", "Market Value", "Allocation"], parent: undefined },
+        "acc09": { name: "Account 9", types: ["Return", "Market Value", "Allocation"], parent: undefined },
+        "pos01": { name: "Position 1", types: ["Market Value", "Return"], parent: "acc01" },
+        "pos02": { name: "Position 2", types: ["Market Value", "Return"], parent: "acc01" },
+        "pos03": { name: "Position 3", types: ["Market Value", "Return"], parent: "acc02"}
+    });
+    const [dataTypes, setDataTypes] = useState<Record<string, DataType>>({
+        "Market Value": { types: ["line", "multi-line", "bar", "table"], range2Enabled: true, canBeMultiple: true },
+        "Return": { types: ["line", "multi-line", "bar", "table"], range2Enabled: true, canBeMultiple: true },
+        "Allocation": { types: ["pie", "table"], range2Enabled: false, canBeMultiple: false }
     });
     const [title, setTitle] = useState<string>("Blank Report");
+
+    const onLoad = (doc: DocumentObject) => {
+        setEntities(doc.entities);
+        setDataTypes(doc.dataTypes);
+        setVisualizations(doc.visualizations);
+    };
 
     const loadBtnClick = (): void => {
         const updatedVisualizations = {...visualizations};
@@ -93,7 +117,8 @@ const App: React.FC = () => {
         <div className="App">
             <AddDialog 
                 nextId={nextId}
-                ids={ids}
+                entities={entities}
+                dataTypes={dataTypes}
                 requested_open={requestAdd}
                 set_requested_open={setRequestAdd}
                 add_visualization={addVisualization} />
