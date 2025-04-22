@@ -11,10 +11,13 @@ html, body {
     background-attachment: fixed;
 }
 
-#grid-editor {
+.template-creation-date-picker {
+    /* To override the MUI margins */
+    margin-right: 20px !important;
+}
+
+.blank-position-listitem {
     display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
-    margin-top: 20px;
+    flex-direction: column;
+    margin-left: 3;
 }

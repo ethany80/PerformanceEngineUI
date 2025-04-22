@@ -63,7 +63,7 @@ const AddDialog: React.FC<Props> = (props) => {
     const [graphTypeEnabled, setGraphTypeEnabled] = useState<boolean>(false);
 
     const [posEntities, setPosEntities] = useState<Record<string, Entity>>({});
-    const [accEntities, setAccEntities] = useState<Record<string, Entity>>({});    
+    const [accEntities, setAccEntities] = useState<Record<string, Entity>>({});
 
     const [prefixedDataTypes, setPrefixedDataTypes] = useState<Record<string,string[]>>({});
 
@@ -76,7 +76,6 @@ const AddDialog: React.FC<Props> = (props) => {
 
     // Initialize available accounts/positions only once.
     useMemo(() => {
-        console.log('initializing add diag');
         let initAcc: Record<string, boolean> = {};
         let parentsInit: Record<string, boolean> = {};
         let initPosE: Record<string, Entity> = {};

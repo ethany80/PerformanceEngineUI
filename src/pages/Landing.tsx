@@ -1,24 +1,20 @@
 import { useEffect, useMemo, useState } from 'react';
 
 import "./Landing.css";
-import GridEditor from "./components/GridEditor/GridEditor";
-import AddDialog from "./components/AddDialog";
-
-import { BAR_CHART, LINE_CHART, MOCK_BAR_GRAPH_REQUEST_RETURN, MOCK_LINE_GRAPH_REQUEST_RETURN, MOCK_PIE_GRAPH_REQUEST_RETURN, MOCK_TITLE, PIE_CHART } from './types/Constants';
-import { DocumentInfo, GraphRequest } from './types/BackendInterfaces';
-import { VizDataProps } from './types/DisplayInterfaces';
 
 import { Button, FormControlLabel, IconButton, Radio, RadioGroup, Stack, TextField } from '@mui/material';
-import { Add, Download, Print, Reviews } from '@mui/icons-material';
-import { Link, useParams } from 'react-router';
+import { Link, useNavigate, useParams } from 'react-router';
 import { Entity } from '../types/BackendInterfaces';
 import BlankCreation from '../components/Landing/BlankCreation';
 import TemplateCreation from '../components/Landing/TemplateCreation';
+import { Dayjs } from 'dayjs';
 
 const Landing: React.FC = () => {
     const [isBlankStr, setIsBlankStr] = useState<string>("blank");
     const [entitiesList, setEntitiesList] = useState<Record<string, Entity>>({});
     const [templatesList, setTemplatesList] = useState<Record<string, string>[]>([]);
+
+    const navigate = useNavigate();
 
     const getEntities = () => {
         setEntitiesList({
@@ -32,7 +28,7 @@ const Landing: React.FC = () => {
             "acc09": { name: "Account 9", types: ["Return", "Market Value", "Allocation"], parent: undefined },
             "pos01": { name: "Position 1", types: ["Market Value", "Return"], parent: "acc01" },
             "pos02": { name: "Position 2", types: ["Market Value", "Return"], parent: "acc01" },
-            "pos03": { name: "Position 3", types: ["Market Value", "Return"], parent: "acc02"}
+            "pos03": { name: "Position 3", types: ["Market Value", "Return"], parent: "acc02" }
         });
     }
 
@@ -43,6 +39,16 @@ const Landing: React.FC = () => {
         ]);
     }
 
+    const fromTemplate = (templateId: string, entities: string[], range1: Dayjs, range2: Dayjs) => {
+        console.log('Creating:', templateId, 'with', entities, 'and ranges', range1.format('MM/DD/YYYY'), range2.format('MM/DD/YYYY'));
+        navigate(`/editor/${templateId}`)
+    }
+
+    const fromBlank = (name: string, entities: string[]) => {
+        console.log('Creating:', name, 'with', entities);
+        navigate(`/editor/${name}`)
+    }
+
     useMemo(() => {
         getEntities();
     }, [])
@@ -50,7 +56,7 @@ const Landing: React.FC = () => {
     return (
         <div className="Landing">
             <h1>Create a Report</h1>
-            <RadioGroup row value={isBlankStr} 
+            <RadioGroup row value={isBlankStr}
                 onChange={(e) => {
                     setIsBlankStr(e.target.value)
                     getEntities();
@@ -59,10 +65,10 @@ const Landing: React.FC = () => {
                 <FormControlLabel value="blank" control={<Radio />} label="Blank" />
                 <FormControlLabel value="template" control={<Radio />} label="Template" />
             </RadioGroup>
-            { isBlankStr == "blank" ?
-                <BlankCreation entitiesMap={entitiesList} />
+            {isBlankStr == "blank" ?
+                <BlankCreation entitiesMap={entitiesList} create={fromBlank} />
                 :
-                <TemplateCreation entitiesMap={entitiesList} templates={templatesList} />
+                <TemplateCreation entitiesMap={entitiesList} templates={templatesList} fromTemplate={fromTemplate} />
             }
         </div>
     );
