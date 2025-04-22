@@ -1,0 +1,23 @@
+.Landing {
+    padding: 20px;
+    background-color: white;
+}
+
+html, body {
+    background-image: linear-gradient(30deg, rgb(97, 205, 255) 0%, #c1ccff 44%, rgba(0,212,255,1) 100%);
+    background-position: 100% 100%;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-attachment: fixed;
+}
+
+.template-creation-date-picker {
+    /* To override the MUI margins */
+    margin-right: 20px !important;
+}
+
+.blank-position-listitem {
+    display: flex;
+    flex-direction: column;
+    margin-left: 3;
+}

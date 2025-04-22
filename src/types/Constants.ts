@@ -119,4 +119,6 @@ export const MOCK_TABLE_REQUEST_RETURN: GraphRequestReturn = {
     }
 }
 
-export const MOCK_TITLE: string = "Loaded Report Title"
+export const MOCK_TITLE: string = "Loaded Report Title";
+
+export const ENDPOINT_URL: string = "127.0.0.1:8000";
