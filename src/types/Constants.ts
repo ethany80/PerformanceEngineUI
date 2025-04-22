@@ -18,7 +18,7 @@ export const MULTI_LINE_CHART = 'multi-line';
 export const TABLE_CHART = 'table';
 
 export const MOCK_BAR_GRAPH_REQUEST: GraphRequest = {
-    id: 'bargraph',
+    id: ['bargraph'],
     dataPoints: 3,
     type: 'returns',
     range: ['00', '01'],
@@ -26,7 +26,7 @@ export const MOCK_BAR_GRAPH_REQUEST: GraphRequest = {
 };
 
 export const MOCK_PIE_GRAPH_REQUEST: GraphRequest = {
-    id: 'piegraph',
+    id: ['piegraph'],
     type: 'allocation',
     dataPoints: 3,
     range: ['00', '01'],
@@ -121,4 +121,4 @@ export const MOCK_TABLE_REQUEST_RETURN: GraphRequestReturn = {
 
 export const MOCK_TITLE: string = "Loaded Report Title";
 
-export const ENDPOINT_URL: string = "127.0.0.1:8000";
+export const ENDPOINT_URL: string = "http://127.0.0.1:5000/api";

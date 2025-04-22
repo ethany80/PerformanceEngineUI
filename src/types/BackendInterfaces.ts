@@ -41,7 +41,7 @@ export interface GraphRequest {
     /**
      * ID to identify graph data source.
      */
-    id: string;
+    id: string[];
     /**
      * Graph data type. (Ex. market value, return)
      */
@@ -159,4 +159,16 @@ export interface GraphRequestReturn {
     MultiLineRequestReturn |
     PieRequestReturn |
     TableRequestReturn;
+}
+
+export interface FromAiRequest {
+    prompt: string;
+    entities: string[];
+    range1: string;
+    range2: string;
+}
+
+export interface FromBlankRequest {
+    name: string;
+    entities: string[];
 }

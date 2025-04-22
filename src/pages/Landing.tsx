@@ -4,10 +4,12 @@ import "./Landing.css";
 
 import { Button, FormControlLabel, IconButton, Radio, RadioGroup, Stack, TextField } from '@mui/material';
 import { Link, useNavigate, useParams } from 'react-router';
-import { Entity } from '../types/BackendInterfaces';
+import { Entity, FromAiRequest, FromBlankRequest } from '../types/BackendInterfaces';
 import BlankCreation from '../components/Landing/BlankCreation';
 import TemplateCreation from '../components/Landing/TemplateCreation';
 import { Dayjs } from 'dayjs';
+import AiCreation from '../components/Landing/AICreation';
+import { ENDPOINT_URL } from '../types/Constants';
 
 const Landing: React.FC = () => {
     const [isBlankStr, setIsBlankStr] = useState<string>("blank");
@@ -17,19 +19,19 @@ const Landing: React.FC = () => {
     const navigate = useNavigate();
 
     const getEntities = () => {
-        setEntitiesList({
-            "acc01": { name: "Account 1", types: ["Return", "Market Value", "Allocation"], parent: undefined },
-            "acc02": { name: "Account 2", types: ["Return", "Market Value", "Allocation"], parent: undefined },
-            "acc04": { name: "Account 4", types: ["Return", "Market Value", "Allocation"], parent: undefined },
-            "acc05": { name: "Account 5", types: ["Return", "Market Value", "Allocation"], parent: undefined },
-            "acc06": { name: "Account 6", types: ["Return", "Market Value", "Allocation"], parent: undefined },
-            "acc07": { name: "Account 7", types: ["Return", "Market Value", "Allocation"], parent: undefined },
-            "acc08": { name: "Account 8", types: ["Return", "Market Value", "Allocation"], parent: undefined },
-            "acc09": { name: "Account 9", types: ["Return", "Market Value", "Allocation"], parent: undefined },
-            "pos01": { name: "Position 1", types: ["Market Value", "Return"], parent: "acc01" },
-            "pos02": { name: "Position 2", types: ["Market Value", "Return"], parent: "acc01" },
-            "pos03": { name: "Position 3", types: ["Market Value", "Return"], parent: "acc02" }
-        });
+        console.log('starting req');
+        const url = new Request(`${ENDPOINT_URL}/all-entities`);
+        fetch(url)
+        .then((resp) => {
+            console.log('got resp', resp)
+            if (resp.status == 200) {
+                resp.json().then((j) => {
+                    // TODO verify this JSON object *actually* matches the interface.
+                    // This will simply assume the object is correct.
+                    setEntitiesList(j);
+                })
+            }
+        })
     }
 
     const getTemplates = () => {
@@ -46,7 +48,54 @@ const Landing: React.FC = () => {
 
     const fromBlank = (name: string, entities: string[]) => {
         console.log('Creating:', name, 'with', entities);
-        navigate(`/editor/${name}`)
+        // `/api/create`
+        // `random-id`
+
+        const req: FromBlankRequest = {
+            name: name,
+            entities: entities
+        }
+
+        const url = new Request(`${ENDPOINT_URL}/from-blank`, {
+            method: 'POST',
+            body: req.toString()
+        });
+        fetch(url)
+        .then((resp) => {
+            if (resp.status == 201) {
+                resp.json().then((j) => {
+                    // TODO verify this JSON object *actually* matches the interface.
+                    // This will simply assume the object is correct.
+                    navigate(`/editor/${j.layout}`)
+                })
+            }
+        })
+        
+    }
+
+    const fromAi = (prompt: string, entities: string[], range1: Dayjs, range2: Dayjs) => {
+        console.log('Creating from prompt', prompt, 'with', entities, 'and ranges', range1.format('MM/DD/YYYY'), range2.format('MM/DD/YYYY'));
+        const req: FromAiRequest = {
+            prompt: prompt,
+            entities: entities,
+            range1: range1.format("MM/DD/YYYY"),
+            range2: range2.format("MM/DD/YYYY")
+        }
+
+        const url = new Request(`${ENDPOINT_URL}/from-ai`, {
+            method: 'POST',
+            body: req.toString()
+        });
+        fetch(url)
+        .then((resp) => {
+            if (resp.status == 201) {
+                resp.json().then((j) => {
+                    // TODO verify this JSON object *actually* matches the interface.
+                    // This will simply assume the object is correct.
+                    navigate(`/editor/${j.layout}`)
+                })
+            }
+        })
     }
 
     useMemo(() => {
@@ -63,12 +112,13 @@ const Landing: React.FC = () => {
                     getTemplates();
                 }} >
                 <FormControlLabel value="blank" control={<Radio />} label="Blank" />
-                <FormControlLabel value="template" control={<Radio />} label="Template" />
+                {/* <FormControlLabel value="template" control={<Radio />} label="Template" /> */}
+                <FormControlLabel value="ai" control={<Radio />} label="AI" />
             </RadioGroup>
             {isBlankStr == "blank" ?
                 <BlankCreation entitiesMap={entitiesList} create={fromBlank} />
                 :
-                <TemplateCreation entitiesMap={entitiesList} templates={templatesList} fromTemplate={fromTemplate} />
+                <AiCreation entitiesMap={entitiesList} templates={templatesList} fromAi={fromAi} />
             }
         </div>
     );

@@ -166,7 +166,7 @@ const AddDialog: React.FC<Props> = (props) => {
     const addBtnSubmit = () => {
         const range1Str = range1 ? range1.toString() : "NULL";
         const range2Str = range2 ? range2.toString() : "NULL";
-        let combinedId: string = "";
+        let combinedId: string[] = [];
         if (idType == "ACC") {
             const intermediary = Object.entries(multiSelectedAccounts).flatMap(([acc, val]) => {
                 if (val) {
@@ -177,7 +177,7 @@ const AddDialog: React.FC<Props> = (props) => {
             })
 
             for (const str of intermediary) {
-                combinedId = combinedId + str + ",";
+                combinedId.push(str);
             }
             // Remove trailing comma
             combinedId = combinedId.slice(0, combinedId.length - 1);
@@ -191,7 +191,7 @@ const AddDialog: React.FC<Props> = (props) => {
             })
 
             for (const str of intermediary) {
-                combinedId = combinedId + str + ",";
+                combinedId.push(str);
             }
             // Remove trailing comma
             combinedId = combinedId.slice(0, combinedId.length - 1);
@@ -208,7 +208,7 @@ const AddDialog: React.FC<Props> = (props) => {
             chartType: graphType
         }
 
-        const newId = newReq.id + props.nextId.toString();
+        const newId = newReq.id[0] + props.nextId.toString();
         const newViz: VizDataProps = {
             req: newReq,
             ret: undefined,
