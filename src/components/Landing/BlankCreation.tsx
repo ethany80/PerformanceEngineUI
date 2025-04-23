@@ -97,6 +97,19 @@ const BlankCreation: React.FC<Props> = (props) => {
 
     return (
         <div id='blank-creation'>
+            <br />
+            <FormControl>
+                <TextField
+                    variant='outlined'
+                    value={docName}
+                    label={"New Report Name"}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                        setDocName(e.target.value);
+                    }} />
+            </FormControl>
+            
+            <br /><br />
+
             <p>Select the entities to use in your report.</p>
             <div id='create-list'>
                 {accountsList.map((accKey) => (
@@ -144,18 +157,6 @@ const BlankCreation: React.FC<Props> = (props) => {
                 
                 ))}
             </div>
-            
-            <br/>
-
-            <FormControl>
-                <TextField
-                    variant='outlined'
-                    value={docName}
-                    label={"New Report Name"}
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                        setDocName(e.target.value);
-                    }} />
-            </FormControl>
 
             <br /><br />
             <Button variant='contained' disabled={!validateFields()} onClick={() => {

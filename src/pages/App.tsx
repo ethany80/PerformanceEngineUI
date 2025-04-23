@@ -5,7 +5,7 @@ import "./App.css";
 import GridEditor from "../components/GridEditor/GridEditor";
 import AddDialog from "../components/AddDialog/AddDialog";
 
-import { BAR_CHART, ENDPOINT_URL, LINE_CHART, MOCK_BAR_GRAPH_REQUEST_RETURN, MOCK_LINE_GRAPH_REQUEST_RETURN, MOCK_MULTI_BAR_GRAPH_REQUEST_RETURN, MOCK_MULTI_LINE_GRAPH_REQUEST_RETURN, MOCK_PIE_GRAPH_REQUEST_RETURN, MOCK_TABLE_REQUEST_RETURN, MOCK_TITLE, MULTI_BAR_CHART, MULTI_LINE_CHART, PIE_CHART, TABLE_CHART } from '../types/Constants';
+import { BAR_CHART, CELL_SIZE, ENDPOINT_URL, LINE_CHART, MOCK_BAR_GRAPH_REQUEST_RETURN, MOCK_LINE_GRAPH_REQUEST_RETURN, MOCK_MULTI_BAR_GRAPH_REQUEST_RETURN, MOCK_MULTI_LINE_GRAPH_REQUEST_RETURN, MOCK_PIE_GRAPH_REQUEST_RETURN, MOCK_TABLE_REQUEST_RETURN, MOCK_TITLE, MULTI_BAR_CHART, MULTI_LINE_CHART, PIE_CHART, TABLE_CHART } from '../types/Constants';
 import { DataType, DocRequest, Entity, GraphRequest, GraphRequestReturn } from '../types/BackendInterfaces';
 import { VizDataProps } from '../types/DisplayInterfaces';
 
@@ -34,7 +34,8 @@ const App: React.FC = () => {
     const getDocument = (documentId: string, callback: (obj: DocumentObject) => void) => {
         // api/doc
         const headers = new Headers();
-        headers.append("Content-Type", "application/json")
+        headers.append("Content-Type", "application/json");
+        headers.append("ngrok-skip-browser-warning", "69420");
 
         const url = new Request(`${ENDPOINT_URL}/doc?layout=${documentId}`, {
             method: 'GET',
@@ -49,6 +50,12 @@ const App: React.FC = () => {
                     // TODO verify this JSON object *actually* matches the interface.
                     // This will simply assume the object is correct.
                     console.log(j);
+                    const docObj = j as DocumentObject;
+                    docObj.dataTypes = (docObj as any)["data-types"];
+                    for (const [,type] of Object.entries(docObj.dataTypes)) {
+                        type.range2Enabled = (type as any)["range2-enabled"];
+                        type.canBeMultiple = (type as any)["can-be-multiple"];
+                    }
                     callback(j as DocumentObject);
                 })
             }
@@ -104,24 +111,33 @@ const App: React.FC = () => {
     };
 
     const requestData = (req: GraphRequest, callback: (ret: GraphRequestReturn|undefined) => void) => {
-        let ret: GraphRequestReturn|undefined;
-        if (req.chartType == BAR_CHART) {
-            ret = MOCK_BAR_GRAPH_REQUEST_RETURN;
-        } else if (req.chartType == MULTI_BAR_CHART) {
-            ret = MOCK_MULTI_BAR_GRAPH_REQUEST_RETURN;
-        } else if (req.chartType == PIE_CHART) {
-            ret = MOCK_PIE_GRAPH_REQUEST_RETURN;
-        } else if (req.chartType == LINE_CHART) {
-            ret = MOCK_LINE_GRAPH_REQUEST_RETURN;
-        } else if  (req.chartType == MULTI_LINE_CHART) {
-            ret = MOCK_MULTI_LINE_GRAPH_REQUEST_RETURN;
-        } else if (req.chartType == TABLE_CHART) {
-            ret = MOCK_TABLE_REQUEST_RETURN;            
-        } else {
-            ret = undefined;
-        }
+        const headers = new Headers();
+        headers.append("Content-Type", "application/json");
+        headers.append("ngrok-skip-browser-warning", "69420");
 
-        callback(ret);
+        console.log("req",req);
+
+        const url = new Request(`${ENDPOINT_URL}/graph`, {
+            method: 'POST',
+            headers: headers,
+            body: JSON.stringify(req)
+        });
+        
+        fetch(url)
+        .then((resp) => {
+            console.log('got resp', resp)
+            if (resp.status == 200) {
+                resp.json().then((j) => {
+                    // TODO verify this JSON object *actually* matches the interface.
+                    // This will simply assume the object is correct.
+                    console.log(j);
+                    const ret = j as GraphRequestReturn;
+                    ret.chartData = (ret as any)["chart-data"];
+                    
+                    callback(j as GraphRequestReturn);
+                })
+            }
+        })
     };
 
     const updateCoords = (id: string, x: number, y: number) => {
@@ -140,6 +156,28 @@ const App: React.FC = () => {
             const { [id]: _, ...others } = prev;
             return others;
         })
+    };
+
+    const scaleUp = () => {
+        if (selectedId) {
+            setVisualizations(prev => {
+                return {
+                    ...prev,
+                    [selectedId]: { ...prev[selectedId], width: prev[selectedId].width + CELL_SIZE, height:  prev[selectedId].height + CELL_SIZE }
+                };
+            });
+        }
+    };
+
+    const scaleDown = () => {
+        if (selectedId) {
+            setVisualizations(prev => {
+                return {
+                    ...prev,
+                    [selectedId]: { ...prev[selectedId], width: prev[selectedId].width - CELL_SIZE, height:  prev[selectedId].height - CELL_SIZE }
+                };
+            });
+        }
     };
 
     const deleteBtn = () => {
@@ -170,6 +208,8 @@ const App: React.FC = () => {
                 <Button variant="contained" onClick={addBtnClick} endIcon={<Add />}>Add Chart</Button>
                 <Button variant='contained' onClick={loadBtnClick} endIcon={<Download />}>Load Data</Button>
                 <Button variant='contained' onClick={deleteBtn}>Delete</Button>
+                <Button variant='contained' onClick={scaleUp}>Scale Up</Button>
+                <Button variant='contained' onClick={scaleDown}>Scale Down</Button>
                 <Button variant='contained' onClick={window.print} endIcon={<Print />}>Print</Button>
             </Stack>
             <div id='grid-editor'>

@@ -10,11 +10,11 @@ export const GRID_WIDTH = 850;
 export const GRID_HEIGHT = 1100;
 
 // Chart types
-export const BAR_CHART = 'bar';
-export const MULTI_BAR_CHART = 'multi-bar';
+export const BAR_CHART = 'bar-unused';
+export const MULTI_BAR_CHART = 'bar';
 export const PIE_CHART = 'pie';
-export const LINE_CHART = 'line';
-export const MULTI_LINE_CHART = 'multi-line';
+export const LINE_CHART = 'line-unused';
+export const MULTI_LINE_CHART = 'line';
 export const TABLE_CHART = 'table';
 
 export const MOCK_BAR_GRAPH_REQUEST: GraphRequest = {
@@ -121,4 +121,5 @@ export const MOCK_TABLE_REQUEST_RETURN: GraphRequestReturn = {
 
 export const MOCK_TITLE: string = "Loaded Report Title";
 
-export const ENDPOINT_URL: string = "http://127.0.0.1:5000/api";
+// export const ENDPOINT_URL: string = "http://127.0.0.1:5000/api";
+export const ENDPOINT_URL: string = "https://1c04-209-54-90-249.ngrok-free.app/api";

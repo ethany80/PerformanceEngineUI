@@ -133,7 +133,7 @@ export interface TableRequestReturn {
     /** Whether to separate the bottom row in styling. */
     seperateBottom: boolean;
     /** Flattened row-major array of table values. */
-    data: string[]|number[];
+    datapoints: string[]|number[];
 }
 
 

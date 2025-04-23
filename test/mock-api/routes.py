@@ -26,6 +26,7 @@ def create_from_blank():
     req = request.json
 
     layouts['blank-id'] = req
+    layouts['blank-id']['visualizations'] = {}
     
     ret = {
         "layout": "blank-id"
@@ -41,6 +42,34 @@ def create_from_blank():
 def create_from_ai():
     req = request.json
     req['name'] = 'AI Name ehehe'
+    req['visualizations'] = {
+        "ID10": {
+            "width": 249,
+            "height": 249,
+            "x": 125,
+            "y": 25,
+            "req": {
+                "id": "acc01",
+                "type": "Market Value",
+                "range": ["01/25/2024", "02/25/2024"],
+                "data-points": 10,
+                "chartType": "bar"
+            }
+        },
+        "ID41": {
+            "width": 249,
+            "height": 249,
+            "x": 425,
+            "y": 325,
+            "req": {
+                "id": "acc02",
+                "type": "Asset Allocation",
+                "range": ["01/25/2024", "02/25/2024"],
+                "data-points": 10,
+                "chartType": "pie"
+            }
+        },
+    }
 
     layouts['ai-id'] = req
 
@@ -72,12 +101,18 @@ def get_doc():
         entities[entity] = CONST_ENTITIES[entity]
 
     data_types = {
-        "Market Value": { "types": ["line", "multi-line", "bar", "table"], "range2-enabled": "true", "can-be-multiple": "true" },
-        "Return": { "types": ["line", "multi-line", "bar", "table"], "range2-enabled": "true", "can-be-multiple": "true" },
-        "Allocation": { "types": ["pie", "table"], "range2-enabled": "false", "can-be-multiple": "false" }
+        "Market Value": { "types": ["line", "multi-line", "bar"], "range2-enabled": "true", "can-be-multiple": "true" },
+        "Return": { "types": ["line", "multi-line", "bar"], "range2-enabled": "true", "can-be-multiple": "true" },
+        "Allocation": { "types": ["pie"], "range2-enabled": "false", "can-be-multiple": "false" }
     }
 
-    resp = jsonify({"entities": entities, "dataTypes": data_types, "name": layouts[layout]["name"]})
+    resp = jsonify({
+        "entities": entities, 
+        "data-types": data_types, 
+        "name": layouts[layout]["name"], 
+        "visualizations": layouts[layout]["visualizations"]})
+    print('Returning:')
+    print(resp.get_json())
     resp.status = 200
 
     return resp

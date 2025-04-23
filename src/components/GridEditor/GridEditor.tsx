@@ -74,7 +74,7 @@ const GridEditor: React.FC<Props> = (props) => {
                         }}
                         onDoubleClickCapture={(target) => {target.stopPropagation(); removeChart(id);}}
                         onClickCapture={() => { props.set_selected(id) }}>
-                        <Visualization graph_type={chart.req.chartType} returned_data={chart.ret} />
+                        <Visualization chartProps={chart} graph_type={chart.req.chartType} returned_data={chart.ret} />
                     </div>
                 </Draggable>
             ))}

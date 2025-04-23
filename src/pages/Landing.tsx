@@ -20,7 +20,15 @@ const Landing: React.FC = () => {
 
     const getEntities = () => {
         console.log('starting req');
-        const url = new Request(`${ENDPOINT_URL}/all-entities`);
+
+        const headers = new Headers();
+        headers.append("ngrok-skip-browser-warning", "69420");
+
+        const url = new Request(`${ENDPOINT_URL}/all-entities`,
+            {
+                headers: headers
+            }
+        );
         fetch(url)
         .then((resp) => {
             console.log('got resp', resp)
@@ -56,7 +64,8 @@ const Landing: React.FC = () => {
         }
 
         const headers = new Headers();
-        headers.append("Content-Type", "application/json")
+        headers.append("Content-Type", "application/json");
+        headers.append("ngrok-skip-browser-warning", "69420");
 
         const url = new Request(`${ENDPOINT_URL}/from-blank`, {
             method: 'POST',

@@ -61,7 +61,6 @@ const AddDialog: React.FC<Props> = (props) => {
     const [numberPoints, setNumberPoints] = useState<number>(3);
     const [numberPointsStr, setNumberPointsStr] = useState<string>("3");
     const [numberPointsError, setNumberPointsError] = useState<boolean>(false);
-    const [graphTypeEnabled, setGraphTypeEnabled] = useState<boolean>(false);
 
     const [posEntities, setPosEntities] = useState<Record<string, Entity>>({});
     const [accEntities, setAccEntities] = useState<Record<string, Entity>>({});    
@@ -125,7 +124,6 @@ const AddDialog: React.FC<Props> = (props) => {
         setRange2(null);
         setGraphType("");
         setAllowedGraphTypes([]);
-        setGraphTypeEnabled(false);
         setRadioSelectedAccount("");
         let tempMultiSelect: Record<string, boolean> = {};
         Object.keys(multiSelectedAccounts).forEach((key) => {
@@ -150,24 +148,27 @@ const AddDialog: React.FC<Props> = (props) => {
     }
 
     const validateFields = (): boolean => {
+        // console.log(props.dataTypes)
+        // console.log(props.dataTypes[selectedType])
+        // console.log(props.dataTypes[selectedType].range2Enabled)
         return (
             (idType == "ACC" &&
                 isTrueInRecord(Object.entries(multiSelectedAccounts)) &&
                 selectedType != "" &&
                 range1 != null &&
                 (
-                    (props.dataTypes[selectedType].range2Enabled && range2 != null) ||
-                    (!props.dataTypes[selectedType].range2Enabled)
+                    ((selectedType == "table" || props.dataTypes[selectedType].range2Enabled) && range2 != null && range1<range2) ||
+                    !(selectedType == "table" || props.dataTypes[selectedType].range2Enabled)
                 ) &&
-                !numberPointsError
+                !numberPointsError 
             ) || 
             (idType == "POS" &&
                 isTrueInRecord(Object.entries(multiSelectedPositions)) &&
                 selectedType != "" &&
                 range1 != null &&
                 (
-                    (props.dataTypes[selectedType].range2Enabled && range2 != null) ||
-                    (!props.dataTypes[selectedType].range2Enabled)
+                    ((selectedType == "table" || props.dataTypes[selectedType].range2Enabled) && range2 != null) ||
+                    !(selectedType == "table" || props.dataTypes[selectedType].range2Enabled)
                 ) &&
                 !numberPointsError
             )
@@ -175,41 +176,30 @@ const AddDialog: React.FC<Props> = (props) => {
     }
 
     const addBtnSubmit = () => {
-        const range1Str = range1 ? range1.toString() : "NULL";
-        const range2Str = range2 ? range2.toString() : "NULL";
+        console.log(multiSelectedAccounts);
+        console.log(multiSelectedPositions);
+        const range1Str = range1 ? range1.format("MM/DD/YYYY") : "NULL";
+        const range2Str = range2 ? range2.format("MM/DD/YYYY") : "NULL";
         let combinedId: string[] = [];
         if (idType == "ACC") {
-            const intermediary = Object.entries(multiSelectedAccounts).flatMap(([acc, val]) => {
+            for (const [acc, val] of Object.entries(multiSelectedAccounts)) {
                 if (val) {
-                    return [acc];
-                } else {
-                    return [];
+                    combinedId.push(acc);
                 }
-            })
-
-            for (const str of intermediary) {
-                combinedId.push(str);
             }
-            // Remove trailing comma
-            combinedId = combinedId.slice(0, combinedId.length - 1);
+
         } else if (idType == "POS") {
-            const intermediary = Object.entries(multiSelectedPositions).flatMap(([pos, val]) => {
+            for (const [acc, val] of Object.entries(multiSelectedPositions)) {
                 if (val) {
-                    return [pos];
-                } else {
-                    return [];
+                    combinedId.push(acc);
                 }
-            })
-
-            for (const str of intermediary) {
-                combinedId.push(str);
             }
-            // Remove trailing comma
-            combinedId = combinedId.slice(0, combinedId.length - 1);
         } else {
             console.error("Attempted to create Graph Request with invalid id type...", idType);
             return;
         }
+
+        console.log(combinedId);
 
         const newReq: GraphRequest = {
             id: combinedId,
@@ -226,8 +216,8 @@ const AddDialog: React.FC<Props> = (props) => {
             // To completely fit in the grid, width/height needs to be size minus 1.
             x: 0,
             y: 0,
-            width: CELL_SIZE * 10 - 1,
-            height: CELL_SIZE * 10 - 1,
+            width: CELL_SIZE * 15 - 1,
+            height: CELL_SIZE * 15 - 1,
         }
         props.add_visualization(newId, newViz)
 
@@ -334,12 +324,17 @@ const AddDialog: React.FC<Props> = (props) => {
                                 label="Data Type"
                                 onChange={(e: SelectChangeEvent) => {
                                     setSelectedType(e.target.value);
-                                    setAllowedGraphTypes(props.dataTypes[e.target.value].types);
+                                    if (e.target.value == "table") {
+                                        setAllowedGraphTypes(['table']);
+                                    } else {
+                                        setAllowedGraphTypes(props.dataTypes[e.target.value].types);
+                                    }
                                     setGraphType("");
                                 }}>
                                 {availableTypes.map((type) => (
                                     <MenuItem key={type} value={type}>{type}</MenuItem>
                                 ))}
+                                 <MenuItem key='table' value='table'>Table</MenuItem>
                             </Select>
                         </FormControl>
                         { /* Range selection based on data type */}
@@ -351,27 +346,19 @@ const AddDialog: React.FC<Props> = (props) => {
                             maxDate={dayjs("03-22-2025","MM-DD-YYYY")}
                             value={range1} 
                             onChange={((e) => {
-                                setRange1(e)
+                                    setRange1(e);
+                                })} />
 
-                                if (props.dataTypes[selectedType].range2Enabled && range2) {
-                                    setGraphTypeEnabled(true);
-                                } else if (!props.dataTypes[selectedType].range2Enabled) {
-                                    setGraphTypeEnabled(true);
-                                }
-                            })} />
+                            {/* <p>{(selectedType != "" && props.dataTypes[selectedType].range2Enabled == true) ? "true" : "false"}</p> */}
 
-                            { selectedType != "" && props.dataTypes[selectedType].range2Enabled &&
-                                <DatePicker 
+                            { selectedType != "" && (selectedType === "table" || props.dataTypes[selectedType].range2Enabled == true) &&
+                                <DatePicker
                                 defaultValue={dayjs("03-22-2025","MM-DD-YYYY")} 
                                 minDate={dayjs("01-05-2023","MM-DD-YYYY")}
                                 maxDate={dayjs("03-22-2025","MM-DD-YYYY")}
                                 value={range2} 
                                 onChange={((e) => {
-                                    setRange2(e)
-
-                                    if (range1) {
-                                        setGraphTypeEnabled(true);
-                                    }
+                                    setRange2(e);
                                 })} />
                             }
 
@@ -408,13 +395,13 @@ const AddDialog: React.FC<Props> = (props) => {
                                 !(
                                     (
                                         selectedType != "" && 
-                                        props.dataTypes[selectedType].range2Enabled && range2 != null && 
+                                        (selectedType == 'table' || props.dataTypes[selectedType].range2Enabled) && range2 != null && 
                                         range1 != null &&
                                         !numberPointsError
                                     ) ||
                                     (
                                         selectedType != "" && 
-                                        !props.dataTypes[selectedType].range2Enabled && range1 != null &&
+                                        !(selectedType == 'table' || props.dataTypes[selectedType].range2Enabled) && range1 != null &&
                                         !numberPointsError
                                     )
                                 )}>
