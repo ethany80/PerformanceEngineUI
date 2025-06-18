@@ -1,54 +1,17 @@
-# React + TypeScript + Vite
+## Abstract
+Our project aims to improve the way financial advisors generate performance reports relative to both customization and efficiency. We
+do this by providing a simple interface and basic functionalities for selecting and placing report components, as well as integrating
+the OpenAI API to generate entire reports from layman’s terms requests. We take a minimalist approach to the UI design,
+ensuring that even those with very little experience are be able to quickly adopt the platform. This new way of generating reports
+will allow advisors to more quickly display personalized metrics to their clients without the need for extensive training or outsourced
+labor.
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Resources
 
-Currently, two official plugins are available:
+Full 14-page analysis and evaluation report [here](https://github.com/ethany80/PerformanceEngineUI/blob/main/doc/Performance_Engine_Eval_Report.pdf).
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Git repo for API [here](https://github.com/ethany80/PerformanceEngineAPI).
 
-## Expanding the ESLint configuration
+##
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
-
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
-```
+_Submitted for CAP5100 UF Spring 2025._
